@@ -10,19 +10,35 @@ using UnityEngine;
 namespace StansAssets.Build.Editor
 {
     class BuildProcessor : IPreprocessBuildWithReport
-    { 
+    {
         const int k_CallbackOrder = 1;
         static readonly string k_BuildMetadataPath = $"Assets/Resources/{nameof(BuildMetadata)}.asset";
         static string BuildMetadataDirectoryPath => Path.GetDirectoryName(k_BuildMetadataPath);
-        
+
         public int callbackOrder => k_CallbackOrder;
+
         public void OnPreprocessBuild(BuildReport report)
         {
-            IncrementBuildNumber();
+            //TODO implement
+            //IncrementBuildNumber();
             var buildMetadata = CreateBuildMetadata();
+
+            switch (report.summary.platform)
+            {
+                case BuildTarget.Android:
+                    buildMetadata.BuildNumber = PlayerSettings.Android.bundleVersionCode;
+                    break;
+
+                case BuildTarget.iOS:
+                    buildMetadata.BuildNumber = !string.IsNullOrEmpty(PlayerSettings.iOS.buildNumber)
+                        ? Convert.ToInt32(PlayerSettings.iOS.buildNumber)
+                        : 0;
+                    break;
+            }
+
             SaveBuildMetadata(buildMetadata);
         }
-        
+
         [PostProcessBuild(k_CallbackOrder)]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
@@ -44,7 +60,7 @@ namespace StansAssets.Build.Editor
             meta.MachineName = SystemInfo.deviceName;
             return meta;
         }
-        
+
         static void SaveBuildMetadata(BuildMetadata buildMetadata)
         {
             if (!Directory.Exists(BuildMetadataDirectoryPath))
@@ -52,7 +68,6 @@ namespace StansAssets.Build.Editor
 
             AssetDatabase.CreateAsset(buildMetadata, k_BuildMetadataPath);
         }
-
 
         static void DeleteBuildMetadata()
         {
@@ -76,4 +91,3 @@ namespace StansAssets.Build.Editor
         }
     }
 }
-

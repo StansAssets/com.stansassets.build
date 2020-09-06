@@ -96,6 +96,19 @@ namespace StansAssets.Build
             }
         }
 
+        /// <summary>
+        /// Returns application version number (Read Only).
+        /// Duplicated Unity <see cref="Application.version"/>. Just for your convenience.
+        /// </summary>
+        public string Version => Application.version;
+
+        /// <summary>
+        /// The build number of the bundle.
+        /// Only valid for iOS or Android platforms.
+        /// </summary>
+        [field: SerializeField]
+        public int BuildNumber { get; internal set; }
+        
         internal void SetBuildTime(long ticks)
         {
             m_BuildTime = ticks;

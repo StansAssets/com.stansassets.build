@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+
+    <sa:SettingsBlock class="block-spreadsheet-id">
+        <ui:Label text="Enter spreadsheet ID to save build data" name="Label" class="label-spreadsheet-id"/>
+        <ui:VisualElement class="row">
+            <ui:TextField picking-mode="Ignore" name="spreadsheetIdText" class="spreadsheet-id"/>
+            <ui:Button text="Save Id" name="save-id"/>
+        </ui:VisualElement>
+    </sa:SettingsBlock>
+</ui:UXML>

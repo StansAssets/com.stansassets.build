@@ -8,9 +8,9 @@ Build system package is a free open source product that contains Unity Build rel
 [![Issues](https://img.shields.io/github/issues/StansAssets/com.stansassets.build)](https://github.com/StansAssets/com.stansassets.build/issues)
 
 #### Quick links to explore the library:
-* [Get Build Metadata at runtime.](wiki link here)
-* [Automated build number](wiki link here)
-* [Build steps configuration](wiki link here)
+* [Get Build Metadata at runtime.](https://myapi)
+* [Automated build number](https://myapi)
+* [Build steps configuration](https://myapi)
 
 [API Reference](https://myapi) | [Forum](https://myforum) | [Wiki](https://github.com/StansAssets/com.stansassets.build/wiki)
 

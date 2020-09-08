@@ -3,13 +3,18 @@
   "displayName": "Stans Assets - Build System",
   "version": "0.0.1-preview",
   "unity": "2019.3",
-  "description": "Package Sample.",
+  "description": "free open source product that contains Unity Build related API to help you with build configuration & automation as well as providing an ability to get build metadata at runtime.",
   "dependencies": {
     "com.stansassets.foundation": "1.0.12"
   },
   "keywords": [
+    "upm",
+    "npm",
     "unity",
+    "unity3d",
     "build",
+    "build-tool",
+    "kapps",
     "stansassets"
   ],
   "license": "MIT",

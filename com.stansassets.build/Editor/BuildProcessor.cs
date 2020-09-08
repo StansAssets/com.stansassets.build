@@ -20,6 +20,9 @@ namespace StansAssets.Build.Editor
 
         static readonly List<object> s_Headers = new List<object> { "Build Number", "Version", "Has Changes In Working Copy",  "BranchName", "Commit Hash", "Commit Short Hash", "Commit Message", "Note", "Machine Name", "Build Time", "Commit Time" };
 
+        static int s_LastBuildNumberAndroid;
+        static string s_LastBuildNumberIOS;
+
         public int callbackOrder => k_CallbackOrder;
 
         public void OnPreprocessBuild(BuildReport report)
@@ -57,6 +60,8 @@ namespace StansAssets.Build.Editor
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
             DeleteBuildMetadata();
+            PlayerSettings.Android.bundleVersionCode = s_LastBuildNumberAndroid;
+            PlayerSettings.iOS.buildNumber = s_LastBuildNumberIOS;
         }
 
         public static BuildMetadata CreateBuildMetadata()
@@ -100,20 +105,19 @@ namespace StansAssets.Build.Editor
         {
             var spreadsheet = new Spreadsheet(BuildSystemSettings.Instance.SpreadsheetId);
             spreadsheet.Load();
-            if (spreadsheet.SyncErrorMassage != string.Empty)
+            if (spreadsheet.SyncErrorMassage != null)
             {
                 Debug.LogError(spreadsheet.SyncErrorMassage);
                 throw new Exception(spreadsheet.SyncErrorMassage);
             }
-            var sheetList = spreadsheet.Sheets.Where(sh => sh.Name == buildMetadata.Version);
-            var sheetArr = sheetList as Sheet[] ?? sheetList.ToArray();
+            var sheetList = spreadsheet.Sheets.FirstOrDefault(sh => sh.Name == buildMetadata.Version);
             var rangeAppend = $"{buildMetadata.Version}!A:K";
             var buildNumber = 0;
-            if (!sheetArr.Any())
+            if (sheetList == null)
             {
                 spreadsheet.CreateGoogleSheet(buildMetadata.Version);
                 spreadsheet.AppendGoogleCell(rangeAppend, s_Headers);
-                if (spreadsheet.SyncErrorMassage != string.Empty)
+                if (spreadsheet.SyncErrorMassage != null)
                 {
                     Debug.LogError(spreadsheet.SyncErrorMassage);
                     throw new Exception(spreadsheet.SyncErrorMassage);
@@ -121,10 +125,12 @@ namespace StansAssets.Build.Editor
             }
             else
             {
-                buildNumber = sheetArr[0].GetCell(sheetArr[0].Rows.Count(), 0).GetValue<int>();
+                buildNumber = sheetList.GetCell(sheetList.Rows.Count() - 1, 0).GetValue<int>();
             }
-            buildMetadata.SetBuildTime(buildNumber + 1);
+            buildMetadata.BuildNumber = buildNumber + 1;
             Debug.LogWarning("Setting build number to " + buildMetadata.BuildNumber);
+            s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
+            s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
             PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
             PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
             spreadsheet.AppendGoogleCell(rangeAppend, new List<object>()
@@ -138,10 +144,10 @@ namespace StansAssets.Build.Editor
                 buildMetadata.CommitMessage,
                 buildMetadata.Note,
                 buildMetadata.MachineName,
-                buildMetadata.BuildTime,
-                buildMetadata.CommitTime
+                buildMetadata.BuildTime.ToString("G"),
+                buildMetadata.CommitTime.ToString("G")
             });
-            if (spreadsheet.SyncErrorMassage != string.Empty)
+            if (spreadsheet.SyncErrorMassage != null)
             {
                 Debug.LogError(spreadsheet.SyncErrorMassage);
             }

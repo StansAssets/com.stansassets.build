@@ -1,4 +1,5 @@
 ﻿using StansAssets.Plugins;
+using UnityEditor;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -13,6 +14,8 @@ namespace StansAssets.Build.Editor
         public void SetSpreadsheetId(string id)
         {
             m_SpreadsheetId = id;
+            EditorUtility.SetDirty(this);
+
         }
 
         public void OnBeforeSerialize()

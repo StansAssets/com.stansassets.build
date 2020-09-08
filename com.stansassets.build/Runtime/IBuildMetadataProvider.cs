@@ -1,6 +1,6 @@
 namespace StansAssets.Build
 {
-    public interface IBuildMetadataProvider
+    interface IBuildMetadataProvider
     {
         BuildMetadata GetBuildMetadata();
     }

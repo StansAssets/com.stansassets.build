@@ -7,6 +7,7 @@ namespace StansAssets.Build.Editor
 {
     static class EditorMenu
     {
+        /*
         [MenuItem("MyMenu/Do Something")]
         static void DoSomething()
         {
@@ -30,6 +31,6 @@ namespace StansAssets.Build.Editor
         static void Remove()
         {
            // BuildProcessor.DeleteBuildMetadata();
-        }
+        }*/
     }
 }

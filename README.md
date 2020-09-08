@@ -1,12 +1,16 @@
 # Build System
-<!-- Describe your package -->
+
+Build system package is a free open source product that contains Unity Build related API to help you with Unity build configuration & automation as well as providing the ability to get build metadata in runtime. 
 
 [![NPM Package](https://img.shields.io/npm/v/com.stansassets.build)](https://www.npmjs.com/package/com.stansassets.build)
 [![openupm](https://img.shields.io/npm/v/com.stansassets.build?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.stansassets.build/)
 [![Licence](https://img.shields.io/npm/l/com.stansassets.build)](https://github.com/StansAssets/com.stansassets.build/blob/master/LICENSE)
 [![Issues](https://img.shields.io/github/issues/StansAssets/com.stansassets.build)](https://github.com/StansAssets/com.stansassets.build/issues)
 
-<!-- Add some useful links here -->
+#### Quick links to explore the library:
+* [Get Build Metadata at runtime.](wiki link here)
+* [Automated build number](wiki link here)
+* [Build steps configuration](wiki link here)
 
 [API Reference](https://myapi) | [Forum](https://myforum) | [Wiki](https://github.com/StansAssets/com.stansassets.build/wiki)
 

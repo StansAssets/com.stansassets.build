@@ -1,6 +1,6 @@
 # Build System
 
-Build system package is a free open source product that contains Unity Build related API to help you with Unity build configuration & automation as well as providing the ability to get build metadata in runtime. 
+Build system package is a free open source product that contains [Unity](https://unity.com/) Build related API to help you with build configuration & automation as well as providing an ability to get build metadata at runtime. 
 
 [![NPM Package](https://img.shields.io/npm/v/com.stansassets.build)](https://www.npmjs.com/package/com.stansassets.build)
 [![openupm](https://img.shields.io/npm/v/com.stansassets.build?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.stansassets.build/)

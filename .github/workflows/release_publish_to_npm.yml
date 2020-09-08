@@ -20,6 +20,6 @@ jobs:
         registry-url: https://registry.npmjs.org/
       
     # Publish to npm
-    - run: npm publish <your-package-name> --access public
+    - run: npm publish com.stansassets.build --access public
       env:
         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

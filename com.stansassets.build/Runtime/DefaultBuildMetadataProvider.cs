@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace StansAssets.Build
 {
-    public class DefaultBuildMetadataProvider : IBuildMetadataProvider
+    class DefaultBuildMetadataProvider : IBuildMetadataProvider
     {
         BuildMetadata m_BuildMetadata;
 

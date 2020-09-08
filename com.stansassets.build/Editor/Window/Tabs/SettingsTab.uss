@@ -1,0 +1,24 @@
+.window-root {
+    flex-grow: 1;
+    max-height: initial;
+}
+
+.row{
+    flex-direction: row;
+}
+
+.label-spreadsheet-id {
+    flex-grow: 1;
+    margin-left: 3px;
+}
+
+.spreadsheet-id {
+    flex-grow: 1;
+    flex-shrink: 0;
+    max-height: initial;
+    margin-right: 5px;
+}
+
+.block-spreadsheet-id {
+    padding-right: 20px;
+}

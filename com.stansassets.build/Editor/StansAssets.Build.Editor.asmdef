@@ -3,7 +3,12 @@
     "references": [
         "StansAssets.Build",
         "StansAssets.Git",
-        "StansAssets.Foundation"
+        "StansAssets.Foundation",
+        "StansAssets.Foundation.Editor",
+        "StansAssets.Plugins",
+        "StansAssets.Plugins.Editor",
+        "StansAssets.GoogleDoc",
+        "StansAssets.GoogleDoc.Editor"
     ],
     "includePlatforms": [
         "Editor"

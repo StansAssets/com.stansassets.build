@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using StansAssets.Git;
+using StansAssets.GoogleDoc;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -15,14 +18,28 @@ namespace StansAssets.Build.Editor
         static readonly string k_BuildMetadataPath = $"Assets/Resources/{nameof(BuildMetadata)}.asset";
         static string BuildMetadataDirectoryPath => Path.GetDirectoryName(k_BuildMetadataPath);
 
+        static readonly List<object> s_Headers = new List<object> { "Build Number", "Version", "Has Changes In Working Copy",  "BranchName", "Commit Hash", "Commit Short Hash", "Commit Message", "Note", "Machine Name", "Build Time", "Commit Time" };
+
+        static int s_LastBuildNumberAndroid;
+        static string s_LastBuildNumberIOS;
+
         public int callbackOrder => k_CallbackOrder;
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            //TODO implement
-            //IncrementBuildNumber();
+  ;
             var buildMetadata = CreateBuildMetadata();
-
+            try
+            {
+                IncrementBuildNumber(buildMetadata);
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
             switch (report.summary.platform)
             {
                 case BuildTarget.Android:
@@ -43,6 +60,8 @@ namespace StansAssets.Build.Editor
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
             DeleteBuildMetadata();
+            PlayerSettings.Android.bundleVersionCode = s_LastBuildNumberAndroid;
+            PlayerSettings.iOS.buildNumber = s_LastBuildNumberIOS;
         }
 
         public static BuildMetadata CreateBuildMetadata()
@@ -82,12 +101,56 @@ namespace StansAssets.Build.Editor
             }
         }
 
-        static void IncrementBuildNumber()
+        static void IncrementBuildNumber(BuildMetadata buildMetadata)
         {
-            int buildNumber = 15;
-            Debug.LogWarning("Setting build number to " + buildNumber);
-            PlayerSettings.Android.bundleVersionCode = buildNumber;
-            PlayerSettings.iOS.buildNumber = buildNumber.ToString();
+            var spreadsheet = new Spreadsheet(BuildSystemSettings.Instance.SpreadsheetId);
+            spreadsheet.Load();
+            if (spreadsheet.SyncErrorMassage != null)
+            {
+                Debug.LogError(spreadsheet.SyncErrorMassage);
+                throw new Exception(spreadsheet.SyncErrorMassage);
+            }
+            var sheetList = spreadsheet.Sheets.FirstOrDefault(sh => sh.Name == buildMetadata.Version);
+            var rangeAppend = $"{buildMetadata.Version}!A:K";
+            var buildNumber = 0;
+            if (sheetList == null)
+            {
+                spreadsheet.CreateGoogleSheet(buildMetadata.Version);
+                spreadsheet.AppendGoogleCell(rangeAppend, s_Headers);
+                if (spreadsheet.SyncErrorMassage != null)
+                {
+                    Debug.LogError(spreadsheet.SyncErrorMassage);
+                    throw new Exception(spreadsheet.SyncErrorMassage);
+                }
+            }
+            else
+            {
+                buildNumber = sheetList.GetCell(sheetList.Rows.Count() - 1, 0).GetValue<int>();
+            }
+            buildMetadata.BuildNumber = buildNumber + 1;
+            Debug.LogWarning("Setting build number to " + buildMetadata.BuildNumber);
+            s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
+            s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
+            PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
+            PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
+            spreadsheet.AppendGoogleCell(rangeAppend, new List<object>()
+            {
+                buildMetadata.BuildNumber,
+                buildMetadata.Version,
+                buildMetadata.HasChangesInWorkingCopy,
+                buildMetadata.BranchName,
+                buildMetadata.CommitHash,
+                buildMetadata.CommitShortHash,
+                buildMetadata.CommitMessage,
+                buildMetadata.Note,
+                buildMetadata.MachineName,
+                buildMetadata.BuildTime.ToString("G"),
+                buildMetadata.CommitTime.ToString("G")
+            });
+            if (spreadsheet.SyncErrorMassage != null)
+            {
+                Debug.LogError(spreadsheet.SyncErrorMassage);
+            }
         }
     }
 }

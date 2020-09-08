@@ -1,5 +1,6 @@
 using StansAssets.Foundation.Extensions;
 using StansAssets.Git;
+using StansAssets.Plugins.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,8 +8,7 @@ namespace StansAssets.Build.Editor
 {
     static class EditorMenu
     {
-        /*
-        [MenuItem("MyMenu/Do Something")]
+        [MenuItem(PackagesConfigEditor.RootMenu + "/" + BuildSystemPackage.DisplayName +"/Do Something")]
         static void DoSomething()
         {
             Debug.Log("Doing Something..2.");
@@ -21,13 +21,13 @@ namespace StansAssets.Build.Editor
 
         }
         
-        [MenuItem("MyMenu/CreateBuildMetadata")]
+        [MenuItem(PackagesConfigEditor.RootMenu + "/" + BuildSystemPackage.DisplayName +"/CreateBuildMetadata")]
         static void Create()
         {
           //  BuildProcessor.CreateBuildMetadata();
         }
         
-        [MenuItem("MyMenu/DeleteBuildMetadata")]
+        [MenuItem(PackagesConfigEditor.RootMenu + "/" + BuildSystemPackage.DisplayName +"/DeleteBuildMetadata")]
         static void Remove()
         {
            // BuildProcessor.DeleteBuildMetadata();

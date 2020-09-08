@@ -22,3 +22,30 @@
 .block-spreadsheet-id {
     padding-right: 20px;
 }
+
+.list-mask {
+    padding-right: 5px;
+    flex-wrap: wrap;
+}
+
+.flexible-space {
+    flex-grow: 1;
+}
+
+.mask-element {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 0;
+    margin-right: 5px;
+    border-bottom-width: 1px;
+    padding: 1px 5px 0 5px;
+    margin-bottom: 6px;
+    flex-direction: row;
+    border-radius: 6px;
+}
+
+.btn-remove {
+    background-image: url('Resources/cross.png');
+    width: 16px;
+    height: 16px;
+}

@@ -30,6 +30,9 @@ namespace StansAssets.Build.Editor
         {
             var buildMetadata = CreateBuildMetadata();
             var firstOrDefault = BuildSystemSettings.Instance.MaskList.FirstOrDefault(m => Regex.IsMatch(buildMetadata.BranchName, m));
+            
+            s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
+            s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
 
             if (firstOrDefault != null)
             {
@@ -42,11 +45,6 @@ namespace StansAssets.Build.Editor
                     Console.WriteLine(e);
                     throw;
                 }
-            }
-            else
-            {
-                s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
-                s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
             }
 
             switch (report.summary.platform)
@@ -140,8 +138,6 @@ namespace StansAssets.Build.Editor
 
             buildMetadata.BuildNumber = buildNumber + 1;
             Debug.LogWarning("Setting build number to " + buildMetadata.BuildNumber);
-            s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
-            s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
             PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
             PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
             spreadsheet.AppendGoogleCell(rangeAppend, new List<object>()

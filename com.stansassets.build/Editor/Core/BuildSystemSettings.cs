@@ -20,25 +20,25 @@ namespace StansAssets.Build.Editor
         public void AddMask(string mask)
         {
             m_MaskList.Add(mask);
-            EditorUtility.SetDirty(this);
+            Save();
         }
 
         public void RemoveMask(string mask)
         {
             m_MaskList.Remove(mask);
-            EditorUtility.SetDirty(this);
+            Save();
         }
 
         public void ClearMaskList()
         {
             m_MaskList.Clear();
-            EditorUtility.SetDirty(this);
+            Save();
         }
 
         public void SetSpreadsheetId(string id)
         {
             m_SpreadsheetId = id;
-            EditorUtility.SetDirty(this);
+            Save();
         }
 
         public void OnBeforeSerialize()

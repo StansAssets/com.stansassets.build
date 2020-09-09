@@ -8,4 +8,13 @@
             <ui:Button text="Save Id" name="save-id"/>
         </ui:VisualElement>
     </sa:SettingsBlock>
+    <sa:SettingsBlock label="List of mask branches to increase the build number" name="block-mask" class="block-spreadsheet-id">
+        <ui:VisualElement name="listMask" class="row list-mask">
+        </ui:VisualElement>
+        <ui:VisualElement class="row">
+            <ui:TextField value="Paste mask branches to increase the build number" picking-mode="Ignore" name="mask-text" class="spreadsheet-id"/>
+            <ui:Button text="Add" name="add-mask"/>
+        </ui:VisualElement>
+        <ui:Button text="Remove all masks" name="clear-mask"/>
+    </sa:SettingsBlock>
 </ui:UXML>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using StansAssets.Git;
 using StansAssets.GoogleDoc;
 using UnityEditor;
@@ -18,7 +19,7 @@ namespace StansAssets.Build.Editor
         static readonly string k_BuildMetadataPath = $"Assets/Resources/{nameof(BuildMetadata)}.asset";
         static string BuildMetadataDirectoryPath => Path.GetDirectoryName(k_BuildMetadataPath);
 
-        static readonly List<object> s_Headers = new List<object> { "Build Number", "Version", "Has Changes In Working Copy",  "BranchName", "Commit Hash", "Commit Short Hash", "Commit Message", "Note", "Machine Name", "Build Time", "Commit Time" };
+        static readonly List<object> s_Headers = new List<object> { "Build Number", "Version", "Has Changes In Working Copy", "BranchName", "Commit Hash", "Commit Short Hash", "Commit Message", "Note", "Machine Name", "Build Time", "Commit Time" };
 
         static int s_LastBuildNumberAndroid;
         static string s_LastBuildNumberIOS;
@@ -27,19 +28,25 @@ namespace StansAssets.Build.Editor
 
         public void OnPreprocessBuild(BuildReport report)
         {
-  ;
             var buildMetadata = CreateBuildMetadata();
-            try
-            {
-                IncrementBuildNumber(buildMetadata);
-                
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var firstOrDefault = BuildSystemSettings.Instance.MaskList.FirstOrDefault(m => Regex.IsMatch(buildMetadata.BranchName, m));
             
+            s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
+            s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
+
+            if (firstOrDefault != null)
+            {
+                try
+                {
+                    IncrementBuildNumber(buildMetadata);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
             switch (report.summary.platform)
             {
                 case BuildTarget.Android:
@@ -110,6 +117,7 @@ namespace StansAssets.Build.Editor
                 Debug.LogError(spreadsheet.SyncErrorMassage);
                 throw new Exception(spreadsheet.SyncErrorMassage);
             }
+
             var sheetList = spreadsheet.Sheets.FirstOrDefault(sh => sh.Name == buildMetadata.Version);
             var rangeAppend = $"{buildMetadata.Version}!A:K";
             var buildNumber = 0;
@@ -127,10 +135,9 @@ namespace StansAssets.Build.Editor
             {
                 buildNumber = sheetList.GetCell(sheetList.Rows.Count() - 1, 0).GetValue<int>();
             }
+
             buildMetadata.BuildNumber = buildNumber + 1;
             Debug.LogWarning("Setting build number to " + buildMetadata.BuildNumber);
-            s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
-            s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
             PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
             PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
             spreadsheet.AppendGoogleCell(rangeAppend, new List<object>()

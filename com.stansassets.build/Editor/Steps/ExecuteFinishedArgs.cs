@@ -6,6 +6,7 @@ namespace StansAssets.Build.Editor
 {
     public class ExecuteFinishedArgs
     {
-        public object args;
+        public object Args;
+        public string ErrorMessage;
     }
 }

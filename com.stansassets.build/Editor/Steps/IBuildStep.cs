@@ -6,7 +6,7 @@ namespace StansAssets.Build.Editor
     {
         event Action<ExecuteFinishedArgs> OnExecuteFinished;
 
-        void Execute(BuildContext buildContext);
+        void Execute(BuildContext buildContext, Action onComplete = null);
 
         int Priority { get; }
     }

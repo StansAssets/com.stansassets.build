@@ -14,8 +14,10 @@ namespace StansAssets.Build.Editor
         public int Priority => m_Priority;
 
         public event Action<ExecuteFinishedArgs> OnExecuteFinished;
+        private event Action onCompleteCallback;
 
-        public void Execute(BuildContext buildContext)
+
+        public void Execute(BuildContext buildContext, Action onComplete)
         {
              BuildProject();
         }
@@ -42,6 +44,8 @@ namespace StansAssets.Build.Editor
                 Debug.Log("Build failed");
             }
             OnExecuteFinished.Invoke(executeFinishedArgs);
+            onCompleteCallback?.Invoke();
+            onCompleteCallback = null;
         }
     }
 }

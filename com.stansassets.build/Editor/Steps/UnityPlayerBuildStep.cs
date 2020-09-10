@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using System;
 
 namespace StansAssets.Build.Editor
 {
@@ -12,7 +13,7 @@ namespace StansAssets.Build.Editor
 
         public int Priority => m_Priority;
 
-        public event System.Action<ExecuteFinishedArgs> OnExecuteFinished;
+        public event Action<ExecuteFinishedArgs> OnExecuteFinished;
 
         public void Execute(BuildContext buildContext)
         {

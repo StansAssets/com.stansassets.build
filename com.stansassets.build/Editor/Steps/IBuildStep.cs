@@ -1,4 +1,6 @@
-﻿namespace StansAssets.Build.Editor
+﻿using System;
+
+namespace StansAssets.Build.Editor
 {
     public interface IBuildStep
     {

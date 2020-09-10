@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
 using UnityEditor.PackageManager;
@@ -17,6 +18,9 @@ namespace StansAssets.Build.Editor
         readonly TextField m_SpreadsheetIdText;
         readonly TextField m_MaskText;
         readonly VisualElement m_ListMask;
+        readonly SettingsBlock m_BlockGoogleDoc;
+        readonly SettingsBlock m_blockSpreadsheetId;
+        readonly SettingsBlock m_blockMask;
 
         public SettingsTab()
             : base($"{BuildSystemPackage.WindowTabsPath}/SettingsTab")
@@ -37,6 +41,21 @@ namespace StansAssets.Build.Editor
             {
                 CreateMaskElement(mask);
             }
+            m_BlockGoogleDoc = this.Q<SettingsBlock>("block-google-doc-connector-pro");
+            m_blockSpreadsheetId = this.Q<SettingsBlock>("block-spreadsheet-id"); 
+            m_blockMask = this.Q<SettingsBlock>("block-mask");
+            if (!StanAssetsPackages.IsGoogleDocConnectorProInstalled)
+            {
+                m_BlockGoogleDoc.style.display = DisplayStyle.Flex;
+                m_blockSpreadsheetId.SetEnabled(false);
+                m_blockMask.SetEnabled(false);
+                var downloadGoogleDocConnector = this.Q<Button>("download-google-doc-connector-pro");
+                downloadGoogleDocConnector.clicked += DownloadGoogleDoc;
+            }
+            else
+            {
+                m_BlockGoogleDoc.style.display = DisplayStyle.None;
+            }
         }
 
         public void SaveId()
@@ -44,14 +63,14 @@ namespace StansAssets.Build.Editor
             BuildSystemSettings.Instance.SetSpreadsheetId(m_SpreadsheetIdText.value);
         }
 
-        public void AddMask()
+        void AddMask()
         {
             BuildSystemSettings.Instance.AddMask(m_MaskText.value);
             CreateMaskElement(m_MaskText.value);
             m_MaskText.value = k_MaskTextPlaceholder;
         }
 
-        public void CreateMaskElement(string mask)
+        void CreateMaskElement(string mask)
         {
             var visualElement = new VisualElement();
             visualElement.AddToClassList("mask-element");
@@ -64,16 +83,24 @@ namespace StansAssets.Build.Editor
             m_ListMask.Add(visualElement);
         }
 
-        public void RemoveMask(VisualElement visualElement, string mask)
+        void RemoveMask(VisualElement visualElement, string mask)
         {
             m_ListMask.Remove(visualElement);
             BuildSystemSettings.Instance.RemoveMask(mask);
         }
 
-        public void ClearMaskList()
+        void ClearMaskList()
         {
             m_ListMask.Clear();
             BuildSystemSettings.Instance.ClearMaskList();
+        }
+
+        void DownloadGoogleDoc()
+        {
+            StanAssetsPackages.AddStanAssetsPackage(StanAssetsPackages.GoogleDocConnectorProPackage, StanAssetsPackages.GoogleDocConnectorProPackageVersion);
+            m_BlockGoogleDoc.style.display = DisplayStyle.None;
+            m_blockSpreadsheetId.SetEnabled(true);
+            m_blockMask.SetEnabled(true);
         }
     }
 }

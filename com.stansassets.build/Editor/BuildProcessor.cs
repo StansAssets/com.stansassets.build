@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using StansAssets.Git;
+#if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
 using StansAssets.GoogleDoc;
+#endif
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -33,7 +35,7 @@ namespace StansAssets.Build.Editor
             
             s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
             s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
-
+#if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
             if (firstOrDefault != null)
             {
                 try
@@ -46,6 +48,7 @@ namespace StansAssets.Build.Editor
                     throw;
                 }
             }
+#endif
 
             switch (report.summary.platform)
             {
@@ -107,7 +110,7 @@ namespace StansAssets.Build.Editor
                 }
             }
         }
-
+#if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
         static void IncrementBuildNumber(BuildMetadata buildMetadata)
         {
             var spreadsheet = new Spreadsheet(BuildSystemSettings.Instance.SpreadsheetId);
@@ -159,5 +162,6 @@ namespace StansAssets.Build.Editor
                 Debug.LogError(spreadsheet.SyncErrorMassage);
             }
         }
+#endif
     }
 }

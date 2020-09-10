@@ -6,8 +6,6 @@ namespace StansAssets.Build.Editor
 {
     public class UnityPlayerBuildStep : IBuildStep
     {
-        private string m_resultMessage;
-
         private int m_Priority;
 
         public int Priority => m_Priority;
@@ -16,12 +14,7 @@ namespace StansAssets.Build.Editor
         {
             return BuildProject();
         }
-
-        public string GetResultMessage()
-        {
-            return m_resultMessage;
-        }
-
+        
         private bool BuildProject()
         {
             bool isSuccess = true;
@@ -30,20 +23,16 @@ namespace StansAssets.Build.Editor
             BuildPlayerOptions currentBuildPlayerOptions =
                 BuildPlayerWindow.DefaultBuildMethods.GetBuildPlayerOptions(defaultBuildPlayerOptions);
 
-            BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
+           // currentBuildPlayerOptions.locationPathName = "";
+           BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
 
             BuildSummary summary = report.summary;
-
-            if (summary.result == BuildResult.Succeeded)
+            
+            if (summary.result == BuildResult.Failed)
             {
-                Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
-            }
-            else if (summary.result == BuildResult.Failed)
-            {
-                Debug.Log("Build failed");
                 isSuccess = false;
             }
-
+            
             return isSuccess;
         }
     }

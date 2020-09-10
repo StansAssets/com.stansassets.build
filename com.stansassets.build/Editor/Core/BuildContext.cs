@@ -1,7 +1,9 @@
-﻿namespace StansAssets.Build.Editor
+﻿using UnityEngine;
+
+namespace StansAssets.Build.Editor
 {
     public class BuildContext
     {
-        public PlatformType TargetPlatform;
+        public RuntimePlatform TargetPlatform;
     }
 }

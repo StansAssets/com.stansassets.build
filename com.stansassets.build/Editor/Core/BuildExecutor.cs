@@ -6,42 +6,35 @@ namespace StansAssets.Build.Editor
     {
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
         private static List<IBuildTask> s_Task = new List<IBuildTask>();
-
+        
+        /// <summary>
+        /// Add IBuildStep object to build pipeline as a step
+        /// </summary>
+        /// <param name="step">Build step</param>
         public static void RegisterStep(IBuildStep step)
         {
             s_Steps.Add(step);
         }
-
-        public static void RemoveStep(IBuildStep step)
-        {
-            s_Steps.Remove(step);
-        }
-
-        private static void ClearSteps()
-        {
-            s_Steps.Clear();
-        }
         
+        /// <summary>
+        /// Add IBuildTask object to build pipeline as a task
+        /// </summary>
+        /// <param name="buildTask">Build task</param>
         public static void RegisterScenePostprocessTask(IBuildTask buildTask)
         {
             s_Task.Add(buildTask);
         }
-
-        public static void RemoveScenePostprocessTask(IBuildTask buildTask)
+        
+        /// <summary>
+        /// Run build process with included steps and tasks
+        /// </summary>
+        public static void Build(BuildContext buildContext)
         {
-            s_Task.Remove(buildTask);
-        }
-
-        private static void ClearTasks()
-        {
-            s_Task.Clear();
-        }
-
-        public static void Build(BuildContext buildContext, BuildMetadata metadata)
-        {
-            CreateBuildStep();
+            RegisterUnityPlayerBuildStep();
+            
             SortSteps();
             SortTasks();
+            
             RunSteps(buildContext);
             RunTasks(buildContext);
         }
@@ -56,9 +49,9 @@ namespace StansAssets.Build.Editor
             s_Task.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         }
 
-        private static void CreateBuildStep()
-        {
-            s_Steps.Add(new UnityPlayerBuildStep());
+        private static void RegisterUnityPlayerBuildStep()
+        {    
+            RegisterStep(new UnityPlayerBuildStep());
         }
 
         private static void RunSteps(BuildContext buildContext)
@@ -73,8 +66,18 @@ namespace StansAssets.Build.Editor
         {
             foreach (var task in s_Task)
             {
-                task.OnPostprocessScene(buildContext.TargetPlatform);
+                task.OnPostprocessScene();
             }
+        }
+        
+        private static void ClearTasks()
+        {
+            s_Task.Clear();
+        }
+        
+        private static void ClearSteps()
+        {
+            s_Steps.Clear();
         }
     }
 }

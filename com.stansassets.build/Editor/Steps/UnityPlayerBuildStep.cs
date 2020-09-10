@@ -12,27 +12,25 @@ namespace StansAssets.Build.Editor
 
         public int Priority => m_Priority;
 
-        public bool Execute(BuildContext buildContext)
+        public event System.Action<ExecuteFinishedArgs> OnExecuteFinished;
+
+        public void Execute(BuildContext buildContext)
         {
-            return BuildProject();
+             BuildProject();
         }
 
-        public string GetResultMessage()
+        private void BuildProject()
         {
-            return m_resultMessage;
-        }
-
-        private bool BuildProject()
-        {
-            bool isSuccess = true;
-
             BuildPlayerOptions defaultBuildPlayerOptions = new BuildPlayerOptions();
             BuildPlayerOptions currentBuildPlayerOptions =
                 BuildPlayerWindow.DefaultBuildMethods.GetBuildPlayerOptions(defaultBuildPlayerOptions);
 
+            ExecuteFinishedArgs executeFinishedArgs = new ExecuteFinishedArgs();
+
             BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
 
             BuildSummary summary = report.summary;
+            executeFinishedArgs.args = summary;
 
             if (summary.result == BuildResult.Succeeded)
             {
@@ -41,10 +39,8 @@ namespace StansAssets.Build.Editor
             else if (summary.result == BuildResult.Failed)
             {
                 Debug.Log("Build failed");
-                isSuccess = false;
             }
-
-            return isSuccess;
+            OnExecuteFinished.Invoke(executeFinishedArgs);
         }
     }
 }

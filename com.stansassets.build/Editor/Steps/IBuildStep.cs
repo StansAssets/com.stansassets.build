@@ -2,9 +2,10 @@
 {
     public interface IBuildStep
     {
-        bool Execute(BuildContext buildContext);
+        event Action<ExecuteFinishedArgs> OnExecuteFinished;
+
+        void Execute(BuildContext buildContext);
 
         int Priority { get; }
-        string GetResultMessage();
     }
 }

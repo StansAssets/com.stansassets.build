@@ -31,6 +31,6 @@ namespace StansAssets.Build.Editor
         static void Remove()
         {
            // BuildProcessor.DeleteBuildMetadata();
-        }*/
+        }
     }
 }

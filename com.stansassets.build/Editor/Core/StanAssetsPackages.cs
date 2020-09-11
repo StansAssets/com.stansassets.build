@@ -6,7 +6,7 @@ namespace StansAssets.Build.Editor
     public static class StanAssetsPackages
     {
         public static readonly string GoogleDocConnectorProPackage = "com.stansassets.google-doc-connector-pro";
-        public static readonly string GoogleDocConnectorProPackageVersion = "https://github.com/StansAssets/com.stansassets.google-doc-connector-pro.git#v0.0.1";
+        public static readonly string GoogleDocConnectorProPackageVersion = "https://github.com/StansAssets/com.stansassets.google-doc-connector-pro.git";
         static ScopeRegistry StanAssetsScopeRegistry =>
             new ScopeRegistry("Stans Assets extra package",
                 "https://stansassets.com",

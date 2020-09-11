@@ -12,10 +12,10 @@ namespace StansAssets.Build.Editor
 
         public bool Execute(BuildContext buildContext)
         {
-            return BuildProject();
+            return BuildProject(buildContext);
         }
-        
-        private bool BuildProject()
+
+        private bool BuildProject(BuildContext buildContext)
         {
             bool isSuccess = true;
 
@@ -23,16 +23,17 @@ namespace StansAssets.Build.Editor
             BuildPlayerOptions currentBuildPlayerOptions =
                 BuildPlayerWindow.DefaultBuildMethods.GetBuildPlayerOptions(defaultBuildPlayerOptions);
 
-           // currentBuildPlayerOptions.locationPathName = "";
-           BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
+            currentBuildPlayerOptions.target = buildContext.TargetPlatform;
+
+            BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
 
             BuildSummary summary = report.summary;
-            
+
             if (summary.result == BuildResult.Failed)
             {
                 isSuccess = false;
             }
-            
+
             return isSuccess;
         }
     }

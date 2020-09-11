@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace StansAssets.Build.Editor
 {    
@@ -7,6 +8,6 @@ namespace StansAssets.Build.Editor
     /// </summary>
     public class BuildContext
     {
-        public RuntimePlatform TargetPlatform;
+        public BuildTarget TargetPlatform;
     }
 }

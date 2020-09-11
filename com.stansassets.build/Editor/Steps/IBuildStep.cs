@@ -8,6 +8,7 @@
         /// <summary>
         /// Run step execution
         /// </summary>
+        /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         bool Execute(BuildContext buildContext);
         
         /// <summary>

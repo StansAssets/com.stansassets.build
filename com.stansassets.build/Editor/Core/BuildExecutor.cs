@@ -32,15 +32,16 @@ namespace StansAssets.Build.Editor
         /// <summary>
         /// Run build process with included steps and tasks
         /// </summary>
+        /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         public static void Build(BuildContext buildContext)
         {
             RegisterUnityPlayerBuildStep();
             
-            SortSteps();
             SortTasks();
-            
-            RunSteps(buildContext);
+            SortSteps();
+
             RunTasks(buildContext);
+            RunSteps(buildContext);
         }
         
         private static void SortSteps()

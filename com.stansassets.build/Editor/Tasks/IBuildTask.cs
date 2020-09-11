@@ -1,16 +1,14 @@
-﻿using UnityEngine;
-
-namespace StansAssets.Build.Editor
+﻿namespace StansAssets.Build.Editor
 {    
     /// <summary>
-    /// Single task which works in opened scene
+    /// Single task which runs when build started.
+    /// Will be called for all included to a build scenes
     /// </summary>
     public interface IBuildTask
     {    
         /// <summary>
         /// Method runs on opened scene
         /// </summary>
-        /// <param name="type"></param>
         void OnPostprocessScene();
         
         /// <summary>

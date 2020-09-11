@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using StansAssets.Foundation.Editor;
+using UnityEditor.PackageManager;
 
 namespace StansAssets.Build.Editor
 {
@@ -52,6 +53,7 @@ namespace StansAssets.Build.Editor
 
             if (manifestUpdated)
                 manifest.ApplyChanges();
+            Client.Add(packageVersion);
         }
     }
 }

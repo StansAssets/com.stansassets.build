@@ -1,5 +1,8 @@
 ﻿namespace StansAssets.Build.Editor
-{
+{    
+    /// <summary>
+    /// Single functional field of build process
+    /// </summary>
     public interface IBuildStep
     {    
         /// <summary>

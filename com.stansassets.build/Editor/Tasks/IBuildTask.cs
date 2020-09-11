@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
 namespace StansAssets.Build.Editor
-{
+{    
+    /// <summary>
+    /// Single task which works in opened scene
+    /// </summary>
     public interface IBuildTask
     {    
         /// <summary>

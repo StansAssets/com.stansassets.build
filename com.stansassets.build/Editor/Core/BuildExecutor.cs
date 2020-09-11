@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace StansAssets.Build.Editor
-{
+{    
+    /// <summary>
+    /// Run registered steps and tasks with build on result
+    /// </summary>
     public static class BuildExecutor
     {
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
@@ -58,8 +62,17 @@ namespace StansAssets.Build.Editor
         {
             foreach (var step in s_Steps)
             {
-                step.Execute(buildContext);
+                if (!step.Execute(buildContext))
+                {
+                    OnStepFailed(step);
+                    break;
+                }
             }
+        }
+
+        private static void OnStepFailed(IBuildStep step)
+        {
+            Debug.LogError("Build Executor : Build is filed");
         }
 
         private static void RunTasks(BuildContext buildContext)

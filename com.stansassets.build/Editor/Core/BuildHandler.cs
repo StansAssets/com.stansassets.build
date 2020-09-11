@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-public static class BuildHandler
+static class BuildHandler
 {
    [InitializeOnLoadMethod]
    private static void Initialize()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StansAssets.Build.Editor
 {
-    public class UnityPlayerBuildStep : IBuildStep
+    class UnityPlayerBuildStep : IBuildStep
     {
         private int m_Priority;
 

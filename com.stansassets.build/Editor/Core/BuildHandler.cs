@@ -14,6 +14,7 @@ static class BuildHandler
       BuildContext buildContext = new BuildContext
       {
          TargetPlatform = options.target,
+         BuildPlayerOptions = options,
       };
 
       BuildExecutor.Build(buildContext);

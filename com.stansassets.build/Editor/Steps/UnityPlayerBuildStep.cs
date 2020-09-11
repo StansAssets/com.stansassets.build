@@ -21,13 +21,7 @@ namespace StansAssets.Build.Editor
 
         private void BuildProject(BuildContext buildContext)
         {
-            BuildPlayerOptions defaultBuildPlayerOptions = new BuildPlayerOptions();
-            BuildPlayerOptions currentBuildPlayerOptions =
-                BuildPlayerWindow.DefaultBuildMethods.GetBuildPlayerOptions(defaultBuildPlayerOptions);
-
-            currentBuildPlayerOptions.target = buildContext.TargetPlatform;
-
-            BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
+            BuildReport report = BuildPipeline.BuildPlayer(buildContext.BuildPlayerOptions);
 
             BuildSummary summary = report.summary;
             

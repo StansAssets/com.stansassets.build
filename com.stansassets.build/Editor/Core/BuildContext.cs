@@ -8,5 +8,6 @@ namespace StansAssets.Build.Editor
     public class BuildContext
     {
         public BuildTarget TargetPlatform;
+        public BuildPlayerOptions BuildPlayerOptions;
     }
 }

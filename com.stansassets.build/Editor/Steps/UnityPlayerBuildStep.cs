@@ -1,6 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEditor.Build.Reporting;
-using UnityEngine;
 
 namespace StansAssets.Build.Editor
 {
@@ -10,15 +10,17 @@ namespace StansAssets.Build.Editor
 
         public int Priority => m_Priority;
 
-        public bool Execute(BuildContext buildContext)
+        private event Action<BuildStepResultArgs> m_OnCompleteCallback;
+
+        public void Execute(BuildContext buildContext, Action<BuildStepResultArgs> onComplete = null)
         {
-            return BuildProject(buildContext);
+            m_OnCompleteCallback = onComplete;
+            
+            BuildProject(buildContext);
         }
 
-        private bool BuildProject(BuildContext buildContext)
+        private void BuildProject(BuildContext buildContext)
         {
-            bool isSuccess = true;
-
             BuildPlayerOptions defaultBuildPlayerOptions = new BuildPlayerOptions();
             BuildPlayerOptions currentBuildPlayerOptions =
                 BuildPlayerWindow.DefaultBuildMethods.GetBuildPlayerOptions(defaultBuildPlayerOptions);
@@ -28,13 +30,16 @@ namespace StansAssets.Build.Editor
             BuildReport report = BuildPipeline.BuildPlayer(currentBuildPlayerOptions);
 
             BuildSummary summary = report.summary;
-
-            if (summary.result == BuildResult.Failed)
-            {
-                isSuccess = false;
-            }
-
-            return isSuccess;
+            
+            BuildStepResultArgs resultArgs = new BuildStepResultArgs
+            {    
+                Step = this,
+                IsSuccess = summary.result == BuildResult.Succeeded,
+                ResultMessage = "UnityPlayerBuildStep execution finish is " + summary.result,
+            };
+            
+            m_OnCompleteCallback?.Invoke(resultArgs);
+            m_OnCompleteCallback = null;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace StansAssets.Build.Editor
+﻿using System;
+
+namespace StansAssets.Build.Editor
 {    
     /// <summary>
     /// Single functional field of build process
@@ -9,7 +11,8 @@
         /// Run step execution
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
-        bool Execute(BuildContext buildContext);
+        /// <param name="onComplete">Delegate which invokes when  step executing will be completed</param>
+        void Execute(BuildContext buildContext,Action<BuildStepResultArgs> onComplete = null);
         
         /// <summary>
         /// Queue number of the step

@@ -10,6 +10,10 @@ namespace StansAssets.Build.Editor
     {
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
         private static List<IBuildTask> s_Task = new List<IBuildTask>();
+
+        private static IBuildStep s_CurrentStep;
+
+        private static BuildContext s_BuildContext;
         
         /// <summary>
         /// Add IBuildStep object to build pipeline as a step
@@ -35,13 +39,15 @@ namespace StansAssets.Build.Editor
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         public static void Build(BuildContext buildContext)
         {
+            s_BuildContext = buildContext;
+            
             RegisterUnityPlayerBuildStep();
             
             SortTasks();
             SortSteps();
 
-            RunTasks(buildContext);
-            RunSteps(buildContext);
+            RunTasks();
+            RunNextStep();
         }
         
         private static void SortSteps()
@@ -59,29 +65,60 @@ namespace StansAssets.Build.Editor
             RegisterStep(new UnityPlayerBuildStep());
         }
 
-        private static void RunSteps(BuildContext buildContext)
+        private static void RunNextStep()
         {
-            foreach (var step in s_Steps)
+            if (s_Steps.Count == 0)
             {
-                if (!step.Execute(buildContext))
-                {
-                    OnStepFailed(step);
-                    break;
-                }
+                OnStepsCompleted();
+                return;
+            }
+
+            s_CurrentStep = s_Steps[0];
+            
+            s_CurrentStep.Execute(s_BuildContext,OnBuildStepCompleted);
+        }
+        
+        private static void OnBuildStepCompleted(BuildStepResultArgs stepExecuteResultArgs)
+        {
+            if (stepExecuteResultArgs.IsSuccess)
+            {
+                ReleaseCurrentAndRunNextStep();
+            }
+            else
+            {
+                OnStepCompleteFailed(stepExecuteResultArgs);
             }
         }
 
-        private static void OnStepFailed(IBuildStep step)
+        private static void ReleaseCurrentAndRunNextStep()
         {
-            Debug.LogError("Build Executor : Build is filed");
+            RemoveCurrentStep();
+            RunNextStep();
         }
 
-        private static void RunTasks(BuildContext buildContext)
+        private static void OnStepCompleteFailed(BuildStepResultArgs stepExecuteResultArgs)
+        {
+            Debug.LogError("Build Executor : " + stepExecuteResultArgs.ResultMessage);
+            ClearSteps();
+        }
+        
+        private static void OnStepsCompleted()
+        {
+            ClearSteps();
+            ClearTasks();
+        }
+
+        private static void RunTasks()
         {
             foreach (var task in s_Task)
             {
                 task.OnPostprocessScene();
             }
+        }
+        
+        private static void RemoveCurrentStep()
+        {
+            s_Steps.Remove(s_CurrentStep);
         }
         
         private static void ClearTasks()

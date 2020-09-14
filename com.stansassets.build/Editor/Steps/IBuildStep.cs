@@ -12,7 +12,7 @@ namespace StansAssets.Build.Editor
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         /// <param name="onComplete">Delegate which invokes when  step executing will be completed</param>
-        void Execute(BuildContext buildContext,Action<BuildStepResultArgs> onComplete = null);
+        void Execute(IBuildStepContext buildContext,Action<BuildStepResultArgs> onComplete = null);
         
         /// <summary>
         /// Queue number of the step

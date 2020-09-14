@@ -10,7 +10,7 @@ namespace StansAssets.Build.Editor
     public static class BuildExecutor
     {
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
-        private static List<IBuildTask> s_Task = new List<IBuildTask>();
+        private static List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
         private static IBuildStep s_CurrentStep;
 
@@ -31,7 +31,7 @@ namespace StansAssets.Build.Editor
         /// <param name="buildTask">Build task</param>
         public static void RegisterScenePostprocessTask(IBuildTask buildTask)
         {
-            s_Task.Add(buildTask);
+            s_Tasks.Add(buildTask);
         }
         
         /// <summary>
@@ -46,8 +46,7 @@ namespace StansAssets.Build.Editor
             
             SortTasks();
             SortSteps();
-
-            RunTasks();
+            
             RunNextStep();
         }
         
@@ -58,12 +57,12 @@ namespace StansAssets.Build.Editor
 
         private static void SortTasks()
         {
-            s_Task.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+            s_Tasks.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         }
 
         private static void RegisterUnityPlayerBuildStep()
         {    
-            RegisterStep(new UnityPlayerBuildStep());
+            RegisterStep(new UnityPlayerBuildStep(s_Tasks));
         }
 
         private static void RunNextStep()
@@ -108,14 +107,6 @@ namespace StansAssets.Build.Editor
             ClearSteps();
             ClearTasks();
         }
-
-        private static void RunTasks()
-        {
-            foreach (var task in s_Task)
-            {
-                task.OnPostprocessScene();
-            }
-        }
         
         private static void RemoveCurrentStep()
         {
@@ -124,7 +115,7 @@ namespace StansAssets.Build.Editor
         
         private static void ClearTasks()
         {
-            s_Task.Clear();
+            s_Tasks.Clear();
         }
         
         private static void ClearSteps()

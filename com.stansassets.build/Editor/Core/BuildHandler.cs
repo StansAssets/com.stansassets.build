@@ -1,22 +1,24 @@
-﻿using StansAssets.Build.Editor;
+﻿using Stansassets.Build;
 using UnityEditor;
 
-static class BuildHandler
+namespace StansAssets.Build.Editor
 {
-   [InitializeOnLoadMethod]
-   private static void Initialize()
+   static class BuildHandler
    {
-      BuildPlayerWindow.RegisterBuildPlayerHandler(RegisterBuildPlayer);
-   }
-   
-   private static void RegisterBuildPlayer(BuildPlayerOptions options)
-   {
-      BuildContext buildContext = new BuildContext
+      [InitializeOnLoadMethod]
+      private static void Initialize()
       {
-         TargetPlatform = options.target,
-         BuildPlayerOptions = options,
-      };
+         BuildPlayerWindow.RegisterBuildPlayerHandler(RegisterBuildPlayer);
+      }
 
-      BuildExecutor.Build(buildContext);
+      private static void RegisterBuildPlayer(BuildPlayerOptions options)
+      {
+         BuildContext buildContext = new BuildContext(options.target,options);
+         
+         var optimizeParticlesTask = new SwitchParticleSystemTask();
+         
+         BuildExecutor.RegisterScenePostprocessTask(optimizeParticlesTask);
+         BuildExecutor.Build(buildContext);
+      }
    }
 }

@@ -19,46 +19,74 @@ namespace StansAssets.Build.Editor
         readonly TextField m_MaskText;
         readonly VisualElement m_ListMask;
         readonly SettingsBlock m_BlockGoogleDoc;
-        readonly SettingsBlock m_blockSpreadsheetId;
-        readonly SettingsBlock m_blockMask;
+        readonly SettingsBlock m_BlockSpreadsheetId;
+        readonly SettingsBlock m_BlockMask;
+        readonly Toggle m_IncrementBuildNumberToggle;
 
         public SettingsTab()
             : base($"{BuildSystemPackage.WindowTabsPath}/SettingsTab")
         {
+            m_MaskText = this.Q<TextField>("mask-text");
             m_SpreadsheetIdText = this.Q<TextField>("spreadsheetIdText");
-            m_SpreadsheetIdText.value = BuildSystemSettings.Instance.SpreadsheetId;
+            m_BlockGoogleDoc = this.Q<SettingsBlock>("block-google-doc-connector-pro");
+            m_BlockSpreadsheetId = this.Q<SettingsBlock>("block-spreadsheet-id");
+            m_BlockMask = this.Q<SettingsBlock>("block-mask");
+            m_ListMask = this.Q<VisualElement>("listMask");
             var spreadsheetIdText = this.Q<Button>("save-id");
             spreadsheetIdText.clicked += SaveId;
-            m_MaskText = this.Q<TextField>("mask-text");
-            m_MaskText.value = k_MaskTextPlaceholder;
-            m_MaskText.tooltip = k_MaskTextPlaceholder;
             var addMask = this.Q<Button>("add-mask");
             addMask.clicked += AddMask;
             var clearMask = this.Q<Button>("clear-mask");
             clearMask.clicked += ClearMaskList;
-            m_ListMask = this.Q<VisualElement>("listMask");
-            foreach (var mask in BuildSystemSettings.Instance.MaskList)
+            var downloadGoogleDocConnector = this.Q<Button>("download-google-doc-connector-pro");
+            downloadGoogleDocConnector.clicked += DownloadGoogleDoc;
+            
+            m_IncrementBuildNumberToggle = this.Q<Toggle>("incrementBuildNumber-toggle");
+            m_IncrementBuildNumberToggle.RegisterValueChangedCallback(e =>
             {
-                CreateMaskElement(mask);
-            }
-            m_BlockGoogleDoc = this.Q<SettingsBlock>("block-google-doc-connector-pro");
-            m_blockSpreadsheetId = this.Q<SettingsBlock>("block-spreadsheet-id"); 
-            m_blockMask = this.Q<SettingsBlock>("block-mask");
+                IncrementBuildNumberToggleBind(e.newValue);
+                BuildSystemSettings.Instance.IncrementBuildNumberEnableSet(e.newValue);
+            });
+            m_IncrementBuildNumberToggle.value = BuildSystemSettings.Instance.IncrementBuildNumberEnable;
+            IncrementBuildNumberToggleBind(m_IncrementBuildNumberToggle.value);
             if (!StanAssetsPackages.IsGoogleDocConnectorProInstalled)
             {
                 m_BlockGoogleDoc.style.display = DisplayStyle.Flex;
-                m_blockSpreadsheetId.SetEnabled(false);
-                m_blockMask.SetEnabled(false);
-                var downloadGoogleDocConnector = this.Q<Button>("download-google-doc-connector-pro");
-                downloadGoogleDocConnector.clicked += DownloadGoogleDoc;
+                m_BlockSpreadsheetId.SetEnabled(false);
+                m_BlockMask.SetEnabled(false);
+                m_IncrementBuildNumberToggle.SetEnabled(false);
             }
             else
             {
                 m_BlockGoogleDoc.style.display = DisplayStyle.None;
             }
         }
+        
+        void Bind()
+        {
+            m_SpreadsheetIdText.value = BuildSystemSettings.Instance.SpreadsheetId;
+            m_MaskText.value = k_MaskTextPlaceholder;
+            m_MaskText.tooltip = k_MaskTextPlaceholder;
+            m_ListMask.Clear();
+            foreach (var mask in BuildSystemSettings.Instance.MaskList)
+            {
+                CreateMaskElement(mask);
+            }
+            if (!StanAssetsPackages.IsGoogleDocConnectorProInstalled)
+            {
+                m_BlockGoogleDoc.style.display = DisplayStyle.Flex;
+                m_BlockSpreadsheetId.SetEnabled(false);
+                m_BlockMask.SetEnabled(false);
+            }
+            else
+            {
+                m_BlockSpreadsheetId.SetEnabled(true);
+                m_BlockMask.SetEnabled(true);
+                m_BlockGoogleDoc.style.display = DisplayStyle.None;
+            }
+        }
 
-        public void SaveId()
+        void SaveId()
         {
             BuildSystemSettings.Instance.SetSpreadsheetId(m_SpreadsheetIdText.value);
         }
@@ -78,7 +106,7 @@ namespace StansAssets.Build.Editor
             visualElement.Add(label);
             var btnRemove = new Button { tooltip = "Remove mask" };
             btnRemove.AddToClassList("btn-remove");
-            btnRemove.clicked += () => { RemoveMask(visualElement, mask);};
+            btnRemove.clicked += () => { RemoveMask(visualElement, mask); };
             visualElement.Add(btnRemove);
             m_ListMask.Add(visualElement);
         }
@@ -99,8 +127,26 @@ namespace StansAssets.Build.Editor
         {
             StanAssetsPackages.AddStanAssetsPackage(StanAssetsPackages.GoogleDocConnectorProPackage, StanAssetsPackages.GoogleDocConnectorProPackageVersion);
             m_BlockGoogleDoc.style.display = DisplayStyle.None;
-            m_blockSpreadsheetId.SetEnabled(true);
-            m_blockMask.SetEnabled(true);
+            m_BlockSpreadsheetId.SetEnabled(true);
+            m_BlockMask.SetEnabled(true);
+            m_IncrementBuildNumberToggle.SetEnabled(true);
+        }
+
+        void IncrementBuildNumberToggleBind(bool newValue)
+        {
+            if (newValue)
+            {
+                m_BlockGoogleDoc.style.display = DisplayStyle.Flex;
+                m_BlockSpreadsheetId.style.display = DisplayStyle.Flex;
+                m_BlockMask.style.display = DisplayStyle.Flex;
+                Bind();
+            }
+            else
+            {
+                m_BlockGoogleDoc.style.display = DisplayStyle.None;
+                m_BlockSpreadsheetId.style.display = DisplayStyle.None;
+                m_BlockMask.style.display = DisplayStyle.None;
+            }
         }
     }
 }

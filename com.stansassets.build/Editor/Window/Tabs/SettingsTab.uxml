@@ -3,6 +3,9 @@
     <sa:SettingsBlock label="If you need to increment the build number for the phone system, keeping it in a Google spreadsheet, then download com.stansassets.google-doc-connector-pro" name="block-google-doc-connector-pro">
         <ui:Button text="Download com.stansassets.google-doc-connector-pro" name="download-google-doc-connector-pro"/>
     </sa:SettingsBlock>
+    <sa:SettingsBlock>
+        <ui:Toggle label="Increment build number and save it to google spreadsheet" name="incrementBuildNumber-toggle"/>
+    </sa:SettingsBlock>
     <sa:SettingsBlock class="block-spreadsheet-id" name="block-spreadsheet-id">
         <ui:Label text="Enter spreadsheet ID to save build data" name="Label" class="label-spreadsheet-id"/>
         <ui:VisualElement class="row">

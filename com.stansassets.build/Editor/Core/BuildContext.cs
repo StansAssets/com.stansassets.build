@@ -11,7 +11,7 @@ namespace StansAssets.Build.Editor
         
         public BuildPlayerOptions BuildPlayerOptions => m_BuildPlayerOptions;
 
-        public string BuildAlias => TargetPlatform.ToString();
+        public string BuildAlias { get; set; }
 
         private BuildTarget m_TargetPlatform;
         

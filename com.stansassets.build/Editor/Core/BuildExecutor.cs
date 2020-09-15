@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -8,6 +9,8 @@ namespace StansAssets.Build.Editor
     /// </summary>
     public static class BuildExecutor
     {
+        public static event Action OnBuildStarted;
+        
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
         private static List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
@@ -38,7 +41,9 @@ namespace StansAssets.Build.Editor
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         public static void Build(BuildContext buildContext)
-        {
+        {    
+            OnBuildStarted?.Invoke();
+            
             s_BuildContext = buildContext;
 
             SortTasks();
@@ -47,6 +52,11 @@ namespace StansAssets.Build.Editor
             RegisterUnityPlayerBuildStep();
             
             RunNextStep();
+        }
+
+        public static void SetAlias(string alias)
+        {
+            s_BuildContext.BuildAlias = alias;
         }
         
         private static void SortSteps()

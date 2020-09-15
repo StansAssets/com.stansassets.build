@@ -20,6 +20,6 @@ namespace StansAssets.Build.Editor
         /// <summary>
         /// Key value 
         /// </summary>
-        string BuildAlias { get; }
+        string BuildAlias { get; set; }
     }
 }

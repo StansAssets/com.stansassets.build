@@ -61,7 +61,7 @@ namespace StansAssets.Build.Editor
 
         private static void RegisterUnityPlayerBuildStep()
         {    
-            RegisterStep(new UnityPlayerBuildStep(s_Tasks));
+            RegisterStep(new UnityPlayerBuildStep(s_Tasks,0));
         }
 
         private static void RunNextStep()

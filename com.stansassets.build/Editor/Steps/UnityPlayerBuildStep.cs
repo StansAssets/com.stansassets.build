@@ -11,20 +11,16 @@ namespace StansAssets.Build.Editor
 {
     class UnityPlayerBuildStep : IBuildStep
     {
-        private int m_Priority;
-
         public int Priority => m_Priority;
-
-        private static List<IBuildTask> s_Tasks;
         
+        private int m_Priority = 0;
+        private static List<IBuildTask> s_Tasks;
         private IBuildStepContext m_BuildContext;
-
         private event Action<BuildStepResultArgs> m_OnCompleteCallback;
 
-        public UnityPlayerBuildStep(List<IBuildTask> tasks,int priority)
+        public UnityPlayerBuildStep(List<IBuildTask> tasks)
         {
             s_Tasks = tasks;
-            m_Priority = priority;
         }
         
         public void Execute(IBuildStepContext buildContext, Action<BuildStepResultArgs> onComplete = null)
@@ -33,7 +29,7 @@ namespace StansAssets.Build.Editor
 
             m_BuildContext = buildContext;
 
-            SetTasksContext();
+            SetContext();
             RunTasks();
                 
             BuildProject();
@@ -56,7 +52,7 @@ namespace StansAssets.Build.Editor
             m_OnCompleteCallback = null;
         }
 
-        private void SetTasksContext()
+        private void SetContext()
         {
             for (int i = 0; i < s_Tasks.Count; i++)
             {

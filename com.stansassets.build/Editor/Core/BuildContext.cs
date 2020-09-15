@@ -17,7 +17,7 @@ namespace StansAssets.Build.Editor
         
         private BuildPlayerOptions m_BuildPlayerOptions;
         
-        public BuildContext(BuildTarget targetPlatform,BuildPlayerOptions buildPlayerOptions)
+        public BuildContext(BuildTarget targetPlatform, BuildPlayerOptions buildPlayerOptions)
         {
             m_TargetPlatform = targetPlatform;
             m_BuildPlayerOptions = buildPlayerOptions;

@@ -1,5 +1,4 @@
-﻿using Stansassets.Build;
-using UnityEditor;
+﻿using UnityEditor;
 
 namespace StansAssets.Build.Editor
 {
@@ -14,10 +13,7 @@ namespace StansAssets.Build.Editor
       private static void RegisterBuildPlayer(BuildPlayerOptions options)
       {
          BuildContext buildContext = new BuildContext(options.target,options);
-         
-         var optimizeParticlesTask = new SwitchParticleSystemTask();
-         
-         BuildExecutor.RegisterScenePostprocessTask(optimizeParticlesTask);
+
          BuildExecutor.Build(buildContext);
       }
    }

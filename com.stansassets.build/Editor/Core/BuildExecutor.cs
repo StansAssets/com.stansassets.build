@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -14,7 +13,7 @@ namespace StansAssets.Build.Editor
 
         private static IBuildStep s_CurrentStep;
 
-        private static BuildContext s_BuildContext;
+        private static IBuildStepContext s_BuildContext;
         
         /// <summary>
         /// Add IBuildStep object to build pipeline as a step
@@ -41,11 +40,11 @@ namespace StansAssets.Build.Editor
         public static void Build(BuildContext buildContext)
         {
             s_BuildContext = buildContext;
-            
-            RegisterUnityPlayerBuildStep();
-            
+
             SortTasks();
             SortSteps();
+            
+            RegisterUnityPlayerBuildStep();
             
             RunNextStep();
         }
@@ -75,10 +74,10 @@ namespace StansAssets.Build.Editor
 
             s_CurrentStep = s_Steps[0];
             
-            s_CurrentStep.Execute(s_BuildContext,OnBuildStepCompleted);
+            s_CurrentStep.Execute(s_BuildContext,OnStepCompleted);
         }
         
-        private static void OnBuildStepCompleted(BuildStepResultArgs stepExecuteResultArgs)
+        private static void OnStepCompleted(BuildStepResultArgs stepExecuteResultArgs)
         {
             if (stepExecuteResultArgs.IsSuccess)
             {
@@ -86,7 +85,7 @@ namespace StansAssets.Build.Editor
             }
             else
             {
-                OnStepCompleteFailed(stepExecuteResultArgs);
+                OnStepFailed(stepExecuteResultArgs);
             }
         }
 
@@ -96,7 +95,7 @@ namespace StansAssets.Build.Editor
             RunNextStep();
         }
 
-        private static void OnStepCompleteFailed(BuildStepResultArgs stepExecuteResultArgs)
+        private static void OnStepFailed(BuildStepResultArgs stepExecuteResultArgs)
         {
             Debug.LogError("Build Executor : " + stepExecuteResultArgs.ResultMessage);
             ClearSteps();

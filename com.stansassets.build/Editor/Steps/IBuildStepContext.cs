@@ -16,5 +16,10 @@ namespace StansAssets.Build.Editor
         /// Build settings 
         /// </summary>
         BuildPlayerOptions BuildPlayerOptions { get; }
+        
+        /// <summary>
+        /// Key value 
+        /// </summary>
+        string BuildAlias { get; }
     }
 }

@@ -48,7 +48,7 @@ namespace StansAssets.Build.Editor
             {
                 Step = this,
                 IsSuccess = summary.result == BuildResult.Succeeded,
-                ResultMessage = "UnityPlayerBuildStep execution finish is " + summary.result,
+                ResultMessage = "UnityPlayerBuildStep finished with: " + summary.result,
             };
 
             m_OnCompleteCallback?.Invoke(resultArgs);
@@ -63,7 +63,7 @@ namespace StansAssets.Build.Editor
             }
         }
         
-        [PostProcessSceneAttribute]
+        [PostProcessScene(1)]
         private static void RunTasks()
         {    
             if(Application.isPlaying)
@@ -90,12 +90,12 @@ namespace StansAssets.Build.Editor
             
             for (int i = 0; i < rootGameObjects.Length; i++)
             {
-                var currentObjectChilds =
+                var componentsInChildren =
                     rootGameObjects[i].GetComponentsInChildren<Transform>();
 
-                for (int j = 0; j < currentObjectChilds.Length; j++)
+                for (int j = 0; j < componentsInChildren.Length; j++)
                 {
-                    allObjects.Add(currentObjectChilds[j].gameObject);
+                    allObjects.Add(componentsInChildren[j].gameObject);
                 }
             }
 

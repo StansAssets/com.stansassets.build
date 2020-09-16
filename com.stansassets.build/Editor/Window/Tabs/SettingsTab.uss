@@ -70,7 +70,7 @@
 
 .label-build-entity,
 .list-build-entity {
-    top: -20px;
+    top: -16px;
     margin-bottom: 5px;
 }
 

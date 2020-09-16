@@ -3,6 +3,7 @@
     struct BuildStepEntity {
         public string Name;
     }
+    
     struct BuildTaskEntity {
         public string Name;
     }

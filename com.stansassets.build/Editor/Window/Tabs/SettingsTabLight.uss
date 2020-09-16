@@ -1,9 +1,11 @@
-.mask-element {
+.mask-element,
+.list-build-entity {
 
     border-color: rgb(138, 138, 138);
     background-color: rgb(165, 165, 165);
 }
 
+.btn-refresh,
 .btn-remove {
     -unity-background-image-tint-color: rgb(101, 101, 101);
 }

@@ -13,7 +13,8 @@ namespace StansAssets.Build.Editor
 
         protected override void OnWindowEnable(VisualElement root)
         {
-            AddTab("Settings", new SettingsTab());
+            BuildSystemSettings.Instance.SettingsTab = new SettingsTab();
+            AddTab("Settings", BuildSystemSettings.Instance.SettingsTab);
             AddTab("About", new AboutTab());
         }
 

@@ -5,21 +5,21 @@ namespace StansAssets.Build.Editor
     /// <summary>
     /// Build parameters
     /// </summary>
-    public interface IBuildStepContext
-    {    
+    public interface IBuildContext
+    {
         /// <summary>
         /// Platform to build
         /// </summary>
         BuildTarget TargetPlatform { get; }
-        
+
         /// <summary>
-        /// Build settings 
+        /// Build settings
         /// </summary>
         BuildPlayerOptions BuildPlayerOptions { get; }
-        
+
         /// <summary>
-        /// Key value 
+        /// Key value
         /// </summary>
-        string BuildAlias { get; set; }
+        string BuildAlias { get; }
     }
 }

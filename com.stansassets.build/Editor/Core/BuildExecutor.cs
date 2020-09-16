@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
-{    
+{
     /// <summary>
     /// Run registered steps and tasks with build on result
     /// </summary>
     public static class BuildExecutor
     {
-        public static event Action OnBuildStarted;
-        
+        public static event Action<IBuildContext> OnBuidExecutorRegistrationStarted = delegate { };
+
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
         private static List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
         private static IBuildStep s_CurrentStep;
 
-        private static IBuildStepContext s_BuildContext;
-        
+        private static IBuildContext s_BuildContext;
+
         /// <summary>
         /// Add IBuildStep object to build pipeline as a step
         /// </summary>
@@ -26,7 +26,7 @@ namespace StansAssets.Build.Editor
         {
             s_Steps.Add(step);
         }
-        
+
         /// <summary>
         /// Add IBuildTask object to build pipeline as a task
         /// </summary>
@@ -35,30 +35,25 @@ namespace StansAssets.Build.Editor
         {
             s_Tasks.Add(buildTask);
         }
-        
+
         /// <summary>
         /// Run build process with included steps and tasks
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         public static void Build(BuildContext buildContext)
-        {    
-            OnBuildStarted?.Invoke();
-            
+        {
             s_BuildContext = buildContext;
+
+            OnBuidExecutorRegistrationStarted.Invoke(s_BuildContext);
 
             SortTasks();
             SortSteps();
-            
+
             RegisterUnityPlayerBuildStep();
-            
+
             RunNextStep();
         }
 
-        public static void SetAlias(string alias)
-        {
-            s_BuildContext.BuildAlias = alias;
-        }
-        
         private static void SortSteps()
         {
             s_Steps.Sort((x, y) => x.Priority.CompareTo(y.Priority));
@@ -70,7 +65,7 @@ namespace StansAssets.Build.Editor
         }
 
         private static void RegisterUnityPlayerBuildStep()
-        {    
+        {
             RegisterStep(new UnityPlayerBuildStep(s_Tasks));
         }
 
@@ -83,10 +78,10 @@ namespace StansAssets.Build.Editor
             }
 
             s_CurrentStep = s_Steps[0];
-            
+
             s_CurrentStep.Execute(s_BuildContext,OnStepCompleted);
         }
-        
+
         private static void OnStepCompleted(BuildStepResultArgs stepExecuteResultArgs)
         {
             if (stepExecuteResultArgs.IsSuccess)
@@ -110,23 +105,23 @@ namespace StansAssets.Build.Editor
             Debug.LogError("Build Executor : " + stepExecuteResultArgs.ResultMessage);
             ClearSteps();
         }
-        
+
         private static void OnStepsCompleted()
         {
             ClearSteps();
             ClearTasks();
         }
-        
+
         private static void RemoveCurrentStep()
         {
             s_Steps.Remove(s_CurrentStep);
         }
-        
+
         private static void ClearTasks()
         {
             s_Tasks.Clear();
         }
-        
+
         private static void ClearSteps()
         {
             s_Steps.Clear();

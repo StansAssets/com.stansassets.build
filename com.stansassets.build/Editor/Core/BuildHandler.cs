@@ -12,7 +12,7 @@ namespace StansAssets.Build.Editor
 
       private static void RegisterBuildPlayer(BuildPlayerOptions options)
       {
-         BuildContext buildContext = new BuildContext(options.target,options);
+         BuildContext buildContext = new BuildContext(options);
 
          BuildExecutor.Build(buildContext);
       }

@@ -15,7 +15,7 @@ namespace StansAssets.Build.Editor
         
         private int m_Priority = 0;
         private static List<IBuildTask> s_Tasks;
-        private IBuildStepContext m_BuildContext;
+        private IBuildContext m_BuildContext;
         private event Action<BuildStepResultArgs> m_OnCompleteCallback;
 
         public UnityPlayerBuildStep(List<IBuildTask> tasks)
@@ -23,7 +23,7 @@ namespace StansAssets.Build.Editor
             s_Tasks = tasks;
         }
         
-        public void Execute(IBuildStepContext buildContext, Action<BuildStepResultArgs> onComplete = null)
+        public void Execute(IBuildContext buildContext, Action<BuildStepResultArgs> onComplete = null)
         {
             m_OnCompleteCallback = onComplete;
 

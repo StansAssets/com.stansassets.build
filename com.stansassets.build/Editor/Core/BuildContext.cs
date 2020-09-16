@@ -1,26 +1,22 @@
 ﻿using UnityEditor;
 
 namespace StansAssets.Build.Editor
-{    
+{
     /// <summary>
     /// Build configuration data
     /// </summary>
-    public class BuildContext : IBuildStepContext
+    public class BuildContext : IBuildContext
     {
-        public BuildTarget TargetPlatform => m_TargetPlatform;
-        
-        public BuildPlayerOptions BuildPlayerOptions => m_BuildPlayerOptions;
-
-        public string BuildAlias { get; set; }
-
-        private BuildTarget m_TargetPlatform;
-        
-        private BuildPlayerOptions m_BuildPlayerOptions;
-        
-        public BuildContext(BuildTarget targetPlatform, BuildPlayerOptions buildPlayerOptions)
+        public BuildContext(BuildPlayerOptions buildPlayerOptions, string buildAlias = null)
         {
-            m_TargetPlatform = targetPlatform;
-            m_BuildPlayerOptions = buildPlayerOptions;
+            BuildPlayerOptions = buildPlayerOptions;
+            BuildAlias = buildAlias;
+
+            TargetPlatform = EditorUserBuildSettings.activeBuildTarget;
         }
+
+        public BuildTarget TargetPlatform { get; }
+        public BuildPlayerOptions BuildPlayerOptions  { get; }
+        public string BuildAlias { get; }
     }
 }

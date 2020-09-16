@@ -1,4 +1,5 @@
-﻿using StansAssets.Plugins;
+﻿using System.Collections.Generic;
+using StansAssets.Plugins;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,13 +10,45 @@ namespace StansAssets.Build.Editor
         public override string PackageName => "com.stansassets.build";
 
         public string SpreadsheetId => m_SpreadsheetId;
+        [SerializeField]
         string m_SpreadsheetId;
+
+        public IEnumerable<string> MaskList => m_MaskList;
+        [SerializeField]
+        List<string> m_MaskList = new List<string>();
+
+        public bool IncrementBuildNumberEnable => m_IncrementBuildNumberEnable;
+        [SerializeField]
+        bool m_IncrementBuildNumberEnable;
 
         public void SetSpreadsheetId(string id)
         {
             m_SpreadsheetId = id;
-            EditorUtility.SetDirty(this);
+            Save();
+        }
 
+        public void AddMask(string mask)
+        {
+            m_MaskList.Add(mask);
+            Save();
+        }
+
+        public void RemoveMask(string mask)
+        {
+            m_MaskList.Remove(mask);
+            Save();
+        }
+
+        public void ClearMaskList()
+        {
+            m_MaskList.Clear();
+            Save();
+        }
+
+        public void IncrementBuildNumberEnableSet(bool value)
+        {
+            m_IncrementBuildNumberEnable = value;
+            Save();
         }
 
         public void OnBeforeSerialize()

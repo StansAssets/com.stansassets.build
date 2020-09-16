@@ -1,5 +1,6 @@
 {
     "name": "StansAssets.Build.Editor",
+    "rootNamespace": "",
     "references": [
         "StansAssets.Build",
         "StansAssets.Git",
@@ -19,6 +20,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.stansassets.google-doc-connector-pro",
+            "expression": "0.0.1",
+            "define": "GOOGLE_DOC_CONNECTOR_PRO_ENABLED"
+        }
+    ],
     "noEngineReferences": false
 }

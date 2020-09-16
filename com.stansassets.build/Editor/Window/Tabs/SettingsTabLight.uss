@@ -1,0 +1,9 @@
+.mask-element {
+
+    border-color: rgb(138, 138, 138);
+    background-color: rgb(165, 165, 165);
+}
+
+.btn-remove {
+    -unity-background-image-tint-color: rgb(101, 101, 101);
+}

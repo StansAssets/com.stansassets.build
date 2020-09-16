@@ -13,9 +13,19 @@ namespace StansAssets.Build.Editor
         [SerializeField]
         string m_SpreadsheetId;
 
-        public List<string> MaskList => m_MaskList;
+        public IEnumerable<string> MaskList => m_MaskList;
         [SerializeField]
         List<string> m_MaskList = new List<string>();
+
+        public bool IncrementBuildNumberEnable => m_IncrementBuildNumberEnable;
+        [SerializeField]
+        bool m_IncrementBuildNumberEnable;
+
+        public void SetSpreadsheetId(string id)
+        {
+            m_SpreadsheetId = id;
+            Save();
+        }
 
         public void AddMask(string mask)
         {
@@ -35,9 +45,9 @@ namespace StansAssets.Build.Editor
             Save();
         }
 
-        public void SetSpreadsheetId(string id)
+        public void IncrementBuildNumberEnableSet(bool value)
         {
-            m_SpreadsheetId = id;
+            m_IncrementBuildNumberEnable = value;
             Save();
         }
 

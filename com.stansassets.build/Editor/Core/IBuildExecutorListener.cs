@@ -15,6 +15,6 @@
         /// Register executor listener
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
-        void Register(IBuildContext context);
+        void Register(IBuildContext buildContext);
     }
 }

@@ -14,7 +14,7 @@ namespace StansAssets.Build.Editor
 {
     class SettingsTab : BaseTab
     {
-        public event Action UpdateBuildEntityCallback = delegate { };
+        public event Action UpdateBuildEntitiesCallback = delegate { };
 
         const string k_MaskTextPlaceholder = "Paste mask branches to increase the build number";
 
@@ -67,11 +67,11 @@ namespace StansAssets.Build.Editor
             {
                 m_BlockGoogleDoc.style.display = DisplayStyle.None;
             }
-            
-            var refreshBtn = this.Q<Button>("refreshBtn");
-            refreshBtn.clicked += UpdateBuildEntityCallback;
 
-            BuildEntityBind(null, null);
+            var refreshBtn = this.Q<Button>("refreshBtn");
+            refreshBtn.clicked += UpdateBuildEntitiesCallback;
+
+            SetBuildEntities(null, null);
         }
 
         void Bind()
@@ -161,8 +161,8 @@ namespace StansAssets.Build.Editor
                 m_BlockMask.style.display = DisplayStyle.None;
             }
         }
-        
-        public void BuildEntityBind([CanBeNull] IEnumerable<BuildStepEntity> buildStep, [CanBeNull] IEnumerable<BuildTaskEntity> buildTask)
+
+        public void SetBuildEntities([CanBeNull] IEnumerable<BuildStepEntity> buildStep, [CanBeNull] IEnumerable<BuildTaskEntity> buildTask)
         {
             m_ListBuildStep.Clear();
             if (buildStep == null || !buildStep.Any())
@@ -176,7 +176,7 @@ namespace StansAssets.Build.Editor
             {
                 foreach (var step in buildStep)
                 {
-                    var label = new Label() { text = $"☀ {step.Name}" };
+                    var label = new Label() { text = $"- {step.Name}" };
                     label.AddToClassList("item-build-entity");
                     m_ListBuildStep.Add(label);
                 }
@@ -194,7 +194,7 @@ namespace StansAssets.Build.Editor
             {
                 foreach (var task in buildTask)
                 {
-                    var label = new Label() { text = $"✎ {task.Name}" };
+                    var label = new Label() { text = $"- {task.Name}" };
                     label.AddToClassList("item-build-entity");
                     m_ListBuildTask.Add(label);
                 }

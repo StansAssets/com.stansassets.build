@@ -26,7 +26,7 @@
         </ui:VisualElement>
         <ui:Button text="Remove all masks" name="clear-mask"/>
     </sa:SettingsBlock>
-    <sa:SettingsBlock label="BuildEntity">
+    <sa:SettingsBlock label="Build Pipeline">
         <ui:Button name="refreshBtn" class="btn-refresh" tooltip="Refresh Build Steps and Build Tasks"/>
         <ui:Label text="Build Steps" name="labelBuildStep" class="label-build-entity"/>
         <ui:VisualElement name="listBuildStep" class="list-build-entity"/>

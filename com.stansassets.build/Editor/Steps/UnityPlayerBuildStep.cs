@@ -12,7 +12,10 @@ namespace StansAssets.Build.Editor
     class UnityPlayerBuildStep : IBuildStep
     {
         public int Priority => m_Priority;
-        
+
+        public string Name => m_Name;
+        private string m_Name = "StepName";
+
         private int m_Priority = 0;
         private static List<IBuildTask> s_Tasks;
         private IBuildContext m_BuildContext;

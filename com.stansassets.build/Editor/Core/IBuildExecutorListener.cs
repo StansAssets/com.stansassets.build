@@ -7,9 +7,10 @@
     public interface IBuildExecutorListener
     {
         /// <summary>
-        /// Checking if include this listener to build
+        /// Indicates is listener active or not while registration flow. It allows toggle to build steps/tasks registration without re-compile
         /// </summary>
         bool Active { get; }
+
         /// <summary>
         /// Register executor listener
         /// </summary>

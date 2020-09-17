@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace StansAssets.Build.Editor
 {
@@ -42,7 +43,7 @@ namespace StansAssets.Build.Editor
         {
             s_BuildContext = buildContext;
 
-            RegisterAllIBuildExecutorListener(buildContext);
+            RegisterListener(buildContext);
 
             SortTasks();
             SortSteps();
@@ -56,7 +57,7 @@ namespace StansAssets.Build.Editor
         /// Getting all types that implement an interface IBuildExecutorListener and run Register method
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
-        internal static void RegisterAllIBuildExecutorListener(BuildContext buildContext)
+        internal static void RegisterListener(BuildContext buildContext)
         {
             var buildExecutorType = typeof(IBuildExecutorListener);
             var scriptsWithBuildExecutorListener = AppDomain.CurrentDomain.GetAssemblies()

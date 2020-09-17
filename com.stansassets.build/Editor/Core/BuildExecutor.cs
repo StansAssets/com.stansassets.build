@@ -9,8 +9,6 @@ namespace StansAssets.Build.Editor
     /// </summary>
     public static class BuildExecutor
     {
-        public static event Action<IBuildContext> OnBuidExecutorRegistrationStarted = delegate { };
-
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
         private static List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
@@ -44,7 +42,7 @@ namespace StansAssets.Build.Editor
         {
             s_BuildContext = buildContext;
 
-            OnBuidExecutorRegistrationStarted.Invoke(s_BuildContext);
+            RegisterAllIBuildExecutorListener(buildContext);
 
             SortTasks();
             SortSteps();
@@ -52,6 +50,26 @@ namespace StansAssets.Build.Editor
             RegisterUnityPlayerBuildStep();
 
             RunNextStep();
+        }
+
+        /// <summary>
+        /// Getting all types that implement an interface IBuildExecutorListener and run Register method
+        /// </summary>
+        /// <param name="buildContext">Data class with necessary parameters for build execution</param>
+        internal static void RegisterAllIBuildExecutorListener(BuildContext buildContext)
+        {
+            var buildExecutorType = typeof(IBuildExecutorListener);
+            var scriptsWithBuildExecutorListener = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => buildExecutorType.IsAssignableFrom(p) && !buildExecutorType.IsInterface && !buildExecutorType.IsAbstract);
+
+            foreach (var buildexecutorListener in scriptsWithBuildExecutorListener)
+            {
+                if (Activator.CreateInstance(buildexecutorListener) is IBuildExecutorListener listener && listener.Active)
+                {
+                    listener.Register(buildContext);
+                }
+            }
         }
 
         private static void SortSteps()
@@ -108,6 +126,7 @@ namespace StansAssets.Build.Editor
 
         private static void OnStepsCompleted()
         {
+            OnBuildFinished();
             ClearSteps();
             ClearTasks();
         }
@@ -125,6 +144,14 @@ namespace StansAssets.Build.Editor
         private static void ClearSteps()
         {
             s_Steps.Clear();
+        }
+
+        private static void OnBuildFinished()
+        {
+            foreach (var task in s_Tasks)
+            {
+                task.OnBuildFinished();
+            }
         }
     }
 }

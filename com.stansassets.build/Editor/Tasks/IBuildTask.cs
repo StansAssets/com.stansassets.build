@@ -36,5 +36,10 @@ namespace StansAssets.Build.Editor
         /// (use less then 0 value if it needs to run before build step)
         /// </summary>
         int Priority { get; }
+
+        /// <summary>
+        /// Task name
+        /// </summary>
+        string Name { get; }
     }
 }

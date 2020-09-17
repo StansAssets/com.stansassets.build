@@ -11,15 +11,12 @@ namespace StansAssets.Build.Editor
 {
     class UnityPlayerBuildStep : IBuildStep
     {
-        public int Priority => m_Priority;
+        public int Priority => 0;
+        public string Name => "UnityPlayerBuildStep";
 
-        public string Name => m_Name;
-        private string m_Name = "StepName";
-
-        private int m_Priority = 0;
         private static List<IBuildTask> s_Tasks;
         private IBuildContext m_BuildContext;
-        private event Action<BuildStepResultArgs> m_OnCompleteCallback;
+        private event Action<BuildStepResultArgs> m_OnCompleteCallback = delegate { };
 
         public UnityPlayerBuildStep(List<IBuildTask> tasks)
         {
@@ -29,7 +26,6 @@ namespace StansAssets.Build.Editor
         public void Execute(IBuildContext buildContext, Action<BuildStepResultArgs> onComplete = null)
         {
             m_OnCompleteCallback = onComplete;
-
             m_BuildContext = buildContext;
 
             SetContext();

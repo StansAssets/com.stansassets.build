@@ -62,7 +62,7 @@ namespace StansAssets.Build.Editor
             var buildExecutorType = typeof(IBuildExecutorListener);
             var scriptsWithBuildExecutorListener = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => buildExecutorType.IsAssignableFrom(p) && !buildExecutorType.IsInterface && !buildExecutorType.IsAbstract);
+                .Where(p => buildExecutorType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract);
 
             foreach (var buildexecutorListener in scriptsWithBuildExecutorListener)
             {

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StansAssets.Plugins;
-using UnityEditor;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -9,6 +9,8 @@ namespace StansAssets.Build.Editor
     {
         public override string PackageName => "com.stansassets.build";
 
+        public SettingsTab SettingsTab { set; internal get; }
+            
         public string SpreadsheetId => m_SpreadsheetId;
         [SerializeField]
         string m_SpreadsheetId;

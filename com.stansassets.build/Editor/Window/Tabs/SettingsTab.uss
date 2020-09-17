@@ -3,7 +3,7 @@
     max-height: initial;
 }
 
-.row{
+.row {
     flex-direction: row;
 }
 
@@ -38,7 +38,7 @@
     margin-left: 0;
     margin-right: 5px;
     border-bottom-width: 1px;
-    padding: 1px 5px 0 5px;
+    padding: 2px 5px 2px 5px;
     margin-bottom: 6px;
     flex-direction: row;
     border-radius: 6px;
@@ -46,6 +46,44 @@
 
 .btn-remove {
     background-image: url('Resources/cross.png');
+    width: 13px;
+    height: 13px;
+    -unity-background-image-tint-color: black;
+    margin: 1px;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.btn-refresh {
+    background-image: url('Resources/refresh.png');
     width: 16px;
     height: 16px;
+    flex: 0 0 auto;
+    margin: 0 5px 0 auto;
+    top: -22px;
 }
+
+.btn-left:hover,
+.btn-right:hover {
+    background-color: rgb(134, 134, 134);
+}
+
+.label-build-entity,
+.list-build-entity {
+    top: -16px;
+    margin-bottom: 5px;
+}
+
+.list-build-entity {
+    padding-bottom: 5px;
+}
+
+.item-build-entity {
+    margin: 5px 0 0 5px;
+    flex-wrap: wrap;
+}
+
+.italic {
+    -unity-font-style: italic;
+}
+

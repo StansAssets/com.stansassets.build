@@ -1,6 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
          xmlns:sa="StansAssets.Foundation.UIElements">
-    <sa:SettingsBlock label="If you need to increment the build number for the phone system, keeping it in a Google spreadsheet, then download com.stansassets.google-doc-connector-pro" name="block-google-doc-connector-pro">
+    <sa:SettingsBlock
+            label="If you need to increment the build number for the phone system, keeping it in a Google spreadsheet, then download com.stansassets.google-doc-connector-pro"
+            name="block-google-doc-connector-pro">
         <ui:Button text="Download com.stansassets.google-doc-connector-pro" name="download-google-doc-connector-pro"/>
     </sa:SettingsBlock>
     <sa:SettingsBlock>
@@ -13,13 +15,22 @@
             <ui:Button text="Save Id" name="save-id"/>
         </ui:VisualElement>
     </sa:SettingsBlock>
-    <sa:SettingsBlock label="List of mask branches to increase the build number" class="block-spreadsheet-id" name="block-mask">
+    <sa:SettingsBlock label="List of mask branches to increase the build number" class="block-spreadsheet-id"
+                      name="block-mask">
         <ui:VisualElement name="listMask" class="row list-mask">
         </ui:VisualElement>
         <ui:VisualElement class="row">
-            <ui:TextField value="Paste mask branches to increase the build number" picking-mode="Ignore" name="mask-text" class="spreadsheet-id"/>
+            <ui:TextField value="Paste mask branches to increase the build number" picking-mode="Ignore"
+                          name="mask-text" class="spreadsheet-id"/>
             <ui:Button text="Add" name="add-mask"/>
         </ui:VisualElement>
         <ui:Button text="Remove all masks" name="clear-mask"/>
+    </sa:SettingsBlock>
+    <sa:SettingsBlock label="BuildEntity">
+        <ui:Button name="refreshBtn" class="btn-refresh" tooltip="Refresh Build Steps and Build Tasks"/>
+        <ui:Label text="Build Steps" name="labelBuildStep" class="label-build-entity"/>
+        <ui:VisualElement name="listBuildStep" class="list-build-entity"/>
+        <ui:Label text="Build Tasks" name="labelBuildTask" class="label-build-entity"/>
+        <ui:VisualElement name="listBuildTask" class="list-build-entity"/>
     </sa:SettingsBlock>
 </ui:UXML>

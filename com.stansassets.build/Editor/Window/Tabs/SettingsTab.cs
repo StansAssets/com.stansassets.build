@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
@@ -13,6 +14,8 @@ namespace StansAssets.Build.Editor
 {
     class SettingsTab : BaseTab
     {
+        public event Action UpdateBuildEntityCallback = delegate { };
+
         const string k_MaskTextPlaceholder = "Paste mask branches to increase the build number";
 
         readonly TextField m_SpreadsheetIdText;
@@ -22,6 +25,8 @@ namespace StansAssets.Build.Editor
         readonly SettingsBlock m_BlockSpreadsheetId;
         readonly SettingsBlock m_BlockMask;
         readonly Toggle m_IncrementBuildNumberToggle;
+        readonly VisualElement m_ListBuildStep;
+        readonly VisualElement m_ListBuildTask;
 
         public SettingsTab()
             : base($"{BuildSystemPackage.WindowTabsPath}/SettingsTab")
@@ -32,6 +37,8 @@ namespace StansAssets.Build.Editor
             m_BlockSpreadsheetId = this.Q<SettingsBlock>("block-spreadsheet-id");
             m_BlockMask = this.Q<SettingsBlock>("block-mask");
             m_ListMask = this.Q<VisualElement>("listMask");
+            m_ListBuildStep = this.Q<VisualElement>("listBuildStep");
+            m_ListBuildTask = this.Q<VisualElement>("listBuildTask");
             var spreadsheetIdText = this.Q<Button>("save-id");
             spreadsheetIdText.clicked += SaveId;
             var addMask = this.Q<Button>("add-mask");
@@ -40,7 +47,7 @@ namespace StansAssets.Build.Editor
             clearMask.clicked += ClearMaskList;
             var downloadGoogleDocConnector = this.Q<Button>("download-google-doc-connector-pro");
             downloadGoogleDocConnector.clicked += DownloadGoogleDoc;
-            
+
             m_IncrementBuildNumberToggle = this.Q<Toggle>("incrementBuildNumber-toggle");
             m_IncrementBuildNumberToggle.RegisterValueChangedCallback(e =>
             {
@@ -60,8 +67,13 @@ namespace StansAssets.Build.Editor
             {
                 m_BlockGoogleDoc.style.display = DisplayStyle.None;
             }
+            
+            var refreshBtn = this.Q<Button>("refreshBtn");
+            refreshBtn.clicked += UpdateBuildEntityCallback;
+
+            BuildEntityBind(null, null);
         }
-        
+
         void Bind()
         {
             m_SpreadsheetIdText.value = BuildSystemSettings.Instance.SpreadsheetId;
@@ -72,6 +84,7 @@ namespace StansAssets.Build.Editor
             {
                 CreateMaskElement(mask);
             }
+
             if (!StanAssetsPackages.IsGoogleDocConnectorProInstalled)
             {
                 m_BlockGoogleDoc.style.display = DisplayStyle.Flex;
@@ -146,6 +159,45 @@ namespace StansAssets.Build.Editor
                 m_BlockGoogleDoc.style.display = DisplayStyle.None;
                 m_BlockSpreadsheetId.style.display = DisplayStyle.None;
                 m_BlockMask.style.display = DisplayStyle.None;
+            }
+        }
+        
+        public void BuildEntityBind([CanBeNull] IEnumerable<BuildStepEntity> buildStep, [CanBeNull] IEnumerable<BuildTaskEntity> buildTask)
+        {
+            m_ListBuildStep.Clear();
+            if (buildStep == null || !buildStep.Any())
+            {
+                var label = new Label() { text = "Nothing" };
+                label.AddToClassList("item-build-entity");
+                label.AddToClassList("italic");
+                m_ListBuildStep.Add(label);
+            }
+            else
+            {
+                foreach (var step in buildStep)
+                {
+                    var label = new Label() { text = $"☀ {step.Name}" };
+                    label.AddToClassList("item-build-entity");
+                    m_ListBuildStep.Add(label);
+                }
+            }
+
+            m_ListBuildTask.Clear();
+            if (buildTask == null || !buildTask.Any())
+            {
+                var label = new Label() { text = "Nothing" };
+                label.AddToClassList("item-build-entity");
+                label.AddToClassList("italic");
+                m_ListBuildTask.Add(label);
+            }
+            else
+            {
+                foreach (var task in buildTask)
+                {
+                    var label = new Label() { text = $"✎ {task.Name}" };
+                    label.AddToClassList("item-build-entity");
+                    m_ListBuildTask.Add(label);
+                }
             }
         }
     }

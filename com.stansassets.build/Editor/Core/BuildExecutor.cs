@@ -45,10 +45,10 @@ namespace StansAssets.Build.Editor
 
             RegisterListeners(buildContext);
 
+            RegisterUnityPlayerBuildStep();
             SortTasks();
             SortSteps();
 
-            RegisterUnityPlayerBuildStep();
 
             RunNextStep();
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -17,7 +18,7 @@ namespace StansAssets.Build.Editor
         /// <summary>
         /// Scene postprocessing started
         /// </summary>
-        void OnPostprocessScene();
+        void OnPostprocessScene(Scene scene);
 
         /// <summary>
         /// Postprocess each GameObject and Components on it in a scene

@@ -29,8 +29,6 @@ namespace StansAssets.Build.Editor
             m_BuildContext = buildContext;
 
             SetContext();
-            RunTasks();
-                
             BuildProject();
         }
 
@@ -61,7 +59,7 @@ namespace StansAssets.Build.Editor
         
         [PostProcessScene(1)]
         private static void RunTasks()
-        {    
+        {
             if(Application.isPlaying)
                 return;
             
@@ -72,6 +70,7 @@ namespace StansAssets.Build.Editor
 
             for (int i = 0; i < s_Tasks.Count; i++)
             {
+                s_Tasks[i].OnPostprocessScene(currentScene);
                 for (int j = 0; j < currentSceneObjects.Count; j++)
                 {
                     List<Component> allObjectComponents = GetAllComponents(currentSceneObjects[j]);

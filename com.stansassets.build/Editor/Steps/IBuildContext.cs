@@ -21,5 +21,12 @@ namespace StansAssets.Build.Editor
         /// Key value
         /// </summary>
         string BuildAlias { get; }
+
+
+        /// <summary>
+        /// Sets scene paths for a build. Will affect build only in case if called before UnityPlayerBuildStep (has priority lower than 0)
+        /// </summary>
+        /// <param name="scenes">Array with scenes path</param>
+        void SetScenes(string[] scenes);
     }
 }

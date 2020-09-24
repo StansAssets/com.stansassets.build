@@ -7,16 +7,22 @@ namespace StansAssets.Build.Editor
     /// </summary>
     public class BuildContext : IBuildContext
     {
+        private BuildPlayerOptions m_BuildPlayerOptions;
         public BuildContext(BuildPlayerOptions buildPlayerOptions, string buildAlias = null)
         {
-            BuildPlayerOptions = buildPlayerOptions;
+            m_BuildPlayerOptions = buildPlayerOptions;
             BuildAlias = buildAlias;
 
             TargetPlatform = EditorUserBuildSettings.activeBuildTarget;
         }
 
         public BuildTarget TargetPlatform { get; }
-        public BuildPlayerOptions BuildPlayerOptions  { get; }
+        public BuildPlayerOptions BuildPlayerOptions => m_BuildPlayerOptions;
         public string BuildAlias { get; }
+
+        public void SetScenes(string[] scenes)
+        {
+            m_BuildPlayerOptions.scenes = scenes;
+        }
     }
 }

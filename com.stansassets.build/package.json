@@ -1,11 +1,11 @@
 {
   "name": "com.stansassets.build",
   "displayName": "Stans Assets - Build System",
-  "version": "0.0.3-preview",
+  "version": "0.0.4-preview",
   "unity": "2019.3",
   "description": "Free open source product that contains Unity Build related API to help you with build configuration & automation as well as providing an ability to get build metadata at runtime.",
   "dependencies": {
-    "com.stansassets.foundation": "1.0.12"
+    "com.stansassets.foundation": "1.0.14"
   },
   "keywords": [
     "upm",

@@ -39,7 +39,7 @@ namespace StansAssets.Build.Editor
         /// Run build process with included steps and tasks
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
-        public static void Build(BuildContext buildContext)
+        public static void Build(IBuildContext buildContext)
         {
             s_BuildContext = buildContext;
 
@@ -57,7 +57,7 @@ namespace StansAssets.Build.Editor
         /// Getting all types that implement an interface IBuildExecutorListener and run Register method
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
-        internal static void RegisterListeners(BuildContext buildContext)
+        internal static void RegisterListeners(IBuildContext buildContext)
         {
             var buildExecutorType = typeof(IBuildExecutorListener);
             var scriptsWithBuildExecutorListener = AppDomain.CurrentDomain.GetAssemblies()
@@ -154,5 +154,10 @@ namespace StansAssets.Build.Editor
                 task.OnBuildFinished();
             }
         }
+
+        /// <summary>
+        /// Please use this property to set BuildSettings before build started
+        /// </summary>
+        public static BuildSettings Settings { get; set; }
     }
 }

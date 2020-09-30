@@ -18,10 +18,9 @@ namespace StansAssets.Build.Editor
         BuildPlayerOptions BuildPlayerOptions { get; }
 
         /// <summary>
-        /// Key value
+        /// Settings that predefined before the build started
         /// </summary>
-        string BuildAlias { get; }
-
+        BuildSettings BuildSettings { get; }
 
         /// <summary>
         /// Sets scene paths for a build. Will affect build only in case if called before UnityPlayerBuildStep (has priority lower than 0)

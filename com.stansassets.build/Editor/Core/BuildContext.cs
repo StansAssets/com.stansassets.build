@@ -9,7 +9,7 @@ namespace StansAssets.Build.Editor
     {
         BuildPlayerOptions m_BuildPlayerOptions;
 
-        public BuildContext(BuildPlayerOptions buildPlayerOptions, BuildSettings buildAlias)
+        public BuildContext(BuildPlayerOptions buildPlayerOptions, BuildSettings buildSettings)
         {
             m_BuildPlayerOptions = buildPlayerOptions;
             BuildSettings = buildAlias;

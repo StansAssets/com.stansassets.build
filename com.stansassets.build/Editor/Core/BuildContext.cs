@@ -12,7 +12,7 @@ namespace StansAssets.Build.Editor
         public BuildContext(BuildPlayerOptions buildPlayerOptions, BuildSettings buildSettings)
         {
             m_BuildPlayerOptions = buildPlayerOptions;
-            BuildSettings = buildAlias;
+            BuildSettings = buildSettings;
 
             TargetPlatform = EditorUserBuildSettings.activeBuildTarget;
         }

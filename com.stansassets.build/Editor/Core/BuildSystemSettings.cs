@@ -7,7 +7,6 @@ namespace StansAssets.Build.Editor
 {
     class BuildSystemSettings : PackageScriptableSettingsSingleton<BuildSystemSettings>, ISerializationCallbackReceiver
     {
-
         public override string PackageName => "com.stansassets.build";
         protected override bool IsEditorOnly => true;
 

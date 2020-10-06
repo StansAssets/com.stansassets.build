@@ -23,11 +23,11 @@ namespace StansAssets.Build.Editor
 
         void SetupSettingsTab()
         {
-            BuildSystemSettings.Instance.SettingsTab.UpdateBuildEntitiesCallback += SetupBuildEntities;
-            SetupBuildEntities();
+            BuildSystemSettings.Instance.SettingsTab.UpdateBuildEntitiesCallback += UpdateBuildEntities;
+            UpdateBuildEntities();
         }
 
-        void SetupBuildEntities()
+        void UpdateBuildEntities()
         {
             BuildExecutor.RegisterListeners(new BuildContext(default, default));
             var steps = BuildExecutor.Steps;

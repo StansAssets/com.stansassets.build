@@ -159,5 +159,8 @@ namespace StansAssets.Build.Editor
         /// Please use this property to set BuildSettings before build started
         /// </summary>
         public static BuildSettings Settings { get; set; }
+
+        internal static IReadOnlyCollection<IBuildStep> Steps => s_Steps;
+        internal static IReadOnlyCollection<IBuildTask> Tasks => s_Tasks;
     }
 }

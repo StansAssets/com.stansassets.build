@@ -1,4 +1,5 @@
-﻿using StansAssets.Foundation.Editor;
+﻿using System.Linq;
+using StansAssets.Foundation.Editor;
 using StansAssets.Plugins.Editor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -16,6 +17,24 @@ namespace StansAssets.Build.Editor
             BuildSystemSettings.Instance.SettingsTab = new SettingsTab();
             AddTab("Settings", BuildSystemSettings.Instance.SettingsTab);
             AddTab("About", new AboutTab());
+
+            SetupSettingsTab();
+        }
+
+        void SetupSettingsTab()
+        {
+            BuildSystemSettings.Instance.SettingsTab.UpdateBuildEntitiesCallback += SetupBuildEntities;
+            SetupBuildEntities();
+        }
+
+        void SetupBuildEntities()
+        {
+            BuildExecutor.RegisterListeners(new BuildContext(default, default));
+            var steps = BuildExecutor.Steps;
+            var tasks = BuildExecutor.Tasks;
+
+            BuildSystemSettings.Instance.SettingsTab.SetBuildEntities(steps.ToList().ConvertAll(s => new BuildStepEntity() { Name = s.Name}),
+                                                                      tasks.ToList().ConvertAll(s => new BuildTaskEntity() { Name = s.Name}));
         }
 
         public static GUIContent WindowTitle => new GUIContent(BuildSystemPackage.DisplayName);

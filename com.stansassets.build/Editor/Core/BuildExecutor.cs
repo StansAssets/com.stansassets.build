@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 namespace StansAssets.Build.Editor
 {
     /// <summary>
     /// Run registered steps and tasks with build on result
     /// </summary>
+    [InitializeOnLoad]
     public static class BuildExecutor
     {
         private static List<IBuildStep> s_Steps = new List<IBuildStep>();
@@ -16,6 +18,12 @@ namespace StansAssets.Build.Editor
         private static IBuildStep s_CurrentStep;
 
         private static IBuildContext s_BuildContext;
+
+        static BuildExecutor()
+        {
+            Settings = BuildContextUtility.BuildSettings;
+            RegisterListeners(new BuildContext(BuildContextUtility.BuildPlayerOptions, Settings));
+        }
 
         /// <summary>
         /// Add IBuildStep object to build pipeline as a step
@@ -64,9 +72,9 @@ namespace StansAssets.Build.Editor
                 .SelectMany(s => s.GetTypes())
                 .Where(p => buildExecutorType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract);
 
-            foreach (var buildexecutorListener in scriptsWithBuildExecutorListener)
+            foreach (var buildExecutorListener in scriptsWithBuildExecutorListener)
             {
-                if (Activator.CreateInstance(buildexecutorListener) is IBuildExecutorListener listener && listener.Active)
+                if (Activator.CreateInstance(buildExecutorListener) is IBuildExecutorListener listener && listener.Active)
                 {
                     listener.Register(buildContext);
                 }
@@ -158,7 +166,7 @@ namespace StansAssets.Build.Editor
         /// <summary>
         /// Please use this property to set BuildSettings before build started
         /// </summary>
-        public static BuildSettings Settings { get; set; }
+        public static BuildSettings Settings { get; }
 
         internal static IReadOnlyCollection<IBuildStep> Steps => s_Steps;
         internal static IReadOnlyCollection<IBuildTask> Tasks => s_Tasks;

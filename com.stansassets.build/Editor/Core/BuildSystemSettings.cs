@@ -10,8 +10,6 @@ namespace StansAssets.Build.Editor
         public override string PackageName => "com.stansassets.build";
         protected override bool IsEditorOnly => true;
 
-        public SettingsTab SettingsTab { set; internal get; }
-
         public string SpreadsheetId => m_SpreadsheetId;
         [SerializeField]
         string m_SpreadsheetId;

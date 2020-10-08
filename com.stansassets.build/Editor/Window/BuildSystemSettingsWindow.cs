@@ -12,28 +12,28 @@ namespace StansAssets.Build.Editor
         protected override PackageInfo GetPackageInfo()
             => PackageManagerUtility.GetPackageInfo(BuildSystemSettings.Instance.PackageName);
 
+        SettingsTab m_SettingsTab;
+
         protected override void OnWindowEnable(VisualElement root)
         {
-            BuildSystemSettings.Instance.SettingsTab = new SettingsTab();
-            AddTab("Settings", BuildSystemSettings.Instance.SettingsTab);
+            m_SettingsTab = new SettingsTab();
+            AddTab("Settings", m_SettingsTab);
             AddTab("About", new AboutTab());
 
-            SetupSettingsTab();
+            SetupSettingsTab(m_SettingsTab);
         }
 
-        void SetupSettingsTab()
+        void SetupSettingsTab(SettingsTab settingsTab)
         {
-            BuildSystemSettings.Instance.SettingsTab.UpdateBuildEntitiesCallback += UpdateBuildEntities;
+            settingsTab.UpdateBuildEntitiesCallback += UpdateBuildEntities;
             UpdateBuildEntities();
         }
 
         void UpdateBuildEntities()
         {
-            BuildExecutor.RegisterListeners(new BuildContext(default, default));
             var steps = BuildExecutor.Steps;
             var tasks = BuildExecutor.Tasks;
-
-            BuildSystemSettings.Instance.SettingsTab.SetBuildEntities(steps.ToList().ConvertAll(s => new BuildStepEntity() { Name = s.Name}),
+            m_SettingsTab.SetBuildEntities(steps.ToList().ConvertAll(s => new BuildStepEntity() { Name = s.Name}),
                                                                       tasks.ToList().ConvertAll(s => new BuildTaskEntity() { Name = s.Name}));
         }
 

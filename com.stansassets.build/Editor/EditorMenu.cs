@@ -33,13 +33,5 @@ namespace StansAssets.Build.Editor
         {
            // BuildProcessor.DeleteBuildMetadata();
         }
-
-        [MenuItem(PackagesConfigEditor.RootMenu + "/" + BuildSystemPackage.DisplayName +"/ExampleBuildEntities")]
-        static void SimpleBuildEntity()
-        {
-            var buildStepEntity = new List<BuildStepEntity>() { new BuildStepEntity() {Name = "First Step"}, new BuildStepEntity() {Name = "Second Step"}};
-            var buildTaskEntity = new List<BuildTaskEntity>() {new BuildTaskEntity() {Name = "First Task"}, new BuildTaskEntity() {Name = "Second Task"}};
-            BuildSystemSettings.Instance.SettingsTab.SetBuildEntities(buildStepEntity, buildTaskEntity);
-        }
     }
 }

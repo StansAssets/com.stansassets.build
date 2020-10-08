@@ -21,7 +21,7 @@ namespace StansAssets.Build.Editor
 
         static BuildExecutor()
         {
-            Settings = BuildExecutorUtility.BuildSettings;
+            Settings = new BuildSettings();
             RegisterListeners(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
         }
 

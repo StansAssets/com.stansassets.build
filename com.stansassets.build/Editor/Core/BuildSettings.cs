@@ -37,5 +37,9 @@ namespace StansAssets.Build.Editor
 
             return false;
         }
+
+        internal void Reset(){
+            m_data.Clear();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace StansAssets.Build.Editor
     static class BuildExecutorUtility
     {
         public static BuildPlayerOptions BuildPlayerOptions => GetBuildPlayerOptions(false, new BuildPlayerOptions());
-        public static BuildSettings BuildSettings => new BuildSettings();
-        public static string DefaultBuildLocation => $"{Path.GetDirectoryName(Application.dataPath)}\\Builds\\{EditorUserBuildSettings.activeBuildTarget.ToString()}";
+        public static string DefaultBuildLocation => Path.Combine(Path.GetDirectoryName(Application.dataPath) ?? throw new UnityException("Application.dataPath is null!"),
+                                                                  "Builds",
+                                                                  EditorUserBuildSettings.activeBuildTarget.ToString());
 
         public static void CheckListenerPriorities(IEnumerable<IBuildExecutorListener> listenersToCheck)
         {

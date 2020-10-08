@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace StansAssets.Build.Editor
 {
-    public static class BuildContextUtility
+    static class BuildContextUtility
     {
         public static BuildPlayerOptions BuildPlayerOptions => GetBuildPlayerOptions(false, new BuildPlayerOptions());
         public static BuildSettings BuildSettings => new BuildSettings();

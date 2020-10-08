@@ -12,6 +12,11 @@
         bool Active { get; }
 
         /// <summary>
+        /// Indicates an execution priority of a <see cref="Register"/> method
+        /// </summary>
+        int Priority { get; }
+
+        /// <summary>
         /// Register executor listener
         /// </summary>
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>

@@ -12,17 +12,17 @@ namespace StansAssets.Build.Editor
     [InitializeOnLoad]
     public static class BuildExecutor
     {
-        private static List<IBuildStep> s_Steps = new List<IBuildStep>();
-        private static List<IBuildTask> s_Tasks = new List<IBuildTask>();
+        static List<IBuildStep> s_Steps = new List<IBuildStep>();
+        static List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
-        private static IBuildStep s_CurrentStep;
+        static IBuildStep s_CurrentStep;
 
-        private static IBuildContext s_BuildContext;
+        static IBuildContext s_BuildContext;
 
         static BuildExecutor()
         {
-            Settings = BuildContextUtility.BuildSettings;
-            RegisterListeners(new BuildContext(BuildContextUtility.BuildPlayerOptions, Settings));
+            Settings = BuildExecutorUtility.BuildSettings;
+            RegisterListeners(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
         }
 
         /// <summary>
@@ -72,31 +72,41 @@ namespace StansAssets.Build.Editor
                 .SelectMany(s => s.GetTypes())
                 .Where(p => buildExecutorType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract);
 
+            var listeners = new List<IBuildExecutorListener>();
             foreach (var buildExecutorListener in scriptsWithBuildExecutorListener)
             {
                 if (Activator.CreateInstance(buildExecutorListener) is IBuildExecutorListener listener && listener.Active)
                 {
-                    listener.Register(buildContext);
+                    listeners.Add(listener);
                 }
+            }
+
+            BuildExecutorUtility.CheckListenerPriorities(listeners);
+
+            listeners.Sort((a,b) => a.Priority.CompareTo(b.Priority));
+
+            foreach (var listener in listeners)
+            {
+                listener.Register(buildContext);
             }
         }
 
-        private static void SortSteps()
+        static void SortSteps()
         {
             s_Steps.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         }
 
-        private static void SortTasks()
+        static void SortTasks()
         {
             s_Tasks.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         }
 
-        private static void RegisterUnityPlayerBuildStep()
+        static void RegisterUnityPlayerBuildStep()
         {
             RegisterStep(new UnityPlayerBuildStep(s_Tasks));
         }
 
-        private static void RunNextStep()
+        static void RunNextStep()
         {
             if (s_Steps.Count == 0)
             {
@@ -109,7 +119,7 @@ namespace StansAssets.Build.Editor
             s_CurrentStep.Execute(s_BuildContext,OnStepCompleted);
         }
 
-        private static void OnStepCompleted(BuildStepResultArgs stepExecuteResultArgs)
+        static void OnStepCompleted(BuildStepResultArgs stepExecuteResultArgs)
         {
             if (stepExecuteResultArgs.IsSuccess)
             {
@@ -121,41 +131,41 @@ namespace StansAssets.Build.Editor
             }
         }
 
-        private static void ReleaseCurrentAndRunNextStep()
+        static void ReleaseCurrentAndRunNextStep()
         {
             RemoveCurrentStep();
             RunNextStep();
         }
 
-        private static void OnStepFailed(BuildStepResultArgs stepExecuteResultArgs)
+        static void OnStepFailed(BuildStepResultArgs stepExecuteResultArgs)
         {
             Debug.LogError("Build Executor : " + stepExecuteResultArgs.ResultMessage);
             ClearSteps();
         }
 
-        private static void OnStepsCompleted()
+        static void OnStepsCompleted()
         {
             OnBuildFinished();
             ClearSteps();
             ClearTasks();
         }
 
-        private static void RemoveCurrentStep()
+        static void RemoveCurrentStep()
         {
             s_Steps.Remove(s_CurrentStep);
         }
 
-        private static void ClearTasks()
+        static void ClearTasks()
         {
             s_Tasks.Clear();
         }
 
-        private static void ClearSteps()
+        static void ClearSteps()
         {
             s_Steps.Clear();
         }
 
-        private static void OnBuildFinished()
+        static void OnBuildFinished()
         {
             foreach (var task in s_Tasks)
             {
@@ -164,7 +174,7 @@ namespace StansAssets.Build.Editor
         }
 
         /// <summary>
-        /// Please use this property to set BuildSettings before build started
+        /// Please use this property to pass data during build pipeline. Check <see cref="BuildSettings.AddData"/>.
         /// </summary>
         public static BuildSettings Settings { get; }
 

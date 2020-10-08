@@ -1,7 +1,7 @@
 {
   "name": "com.stansassets.build",
   "displayName": "Stans Assets - Build System",
-  "version": "0.0.8-preview",
+  "version": "0.0.9-preview",
   "unity": "2019.3",
   "description": "Free open source product that contains Unity Build related API to help you with build configuration & automation as well as providing an ability to get build metadata at runtime.",
   "dependencies": {

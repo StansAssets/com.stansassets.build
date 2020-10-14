@@ -14,15 +14,15 @@ namespace StansAssets.Build.Editor
         public int Priority => 0;
         public string Name => "UnityPlayerBuildStep";
 
-        private static List<IBuildTask> s_Tasks;
-        private IBuildContext m_BuildContext;
-        private event Action<BuildStepResultArgs> m_OnCompleteCallback = delegate { };
+        static List<IBuildTask> s_Tasks;
+        IBuildContext m_BuildContext;
+        Action<BuildStepResultArgs> m_OnCompleteCallback = delegate { };
 
         public UnityPlayerBuildStep(List<IBuildTask> tasks)
         {
             s_Tasks = tasks;
         }
-        
+
         public void Execute(IBuildContext buildContext, Action<BuildStepResultArgs> onComplete = null)
         {
             m_OnCompleteCallback = onComplete;
@@ -32,7 +32,7 @@ namespace StansAssets.Build.Editor
             BuildProject();
         }
 
-        private void BuildProject()
+        void BuildProject()
         {
             BuildReport report = BuildPipeline.BuildPlayer(m_BuildContext.BuildPlayerOptions);
 
@@ -49,59 +49,76 @@ namespace StansAssets.Build.Editor
             m_OnCompleteCallback = null;
         }
 
-        private void SetContext()
+        void SetContext()
         {
             for (int i = 0; i < s_Tasks.Count; i++)
             {
                 s_Tasks[i].SetContext(m_BuildContext);
             }
         }
-        
+
         [PostProcessScene(1)]
-        private static void RunTasks()
+        static void RunTasks()
         {
             if(Application.isPlaying)
                 return;
-            
+
             Scene currentScene = SceneManager.GetActiveScene();
             GameObject[] rootGameObjects = currentScene.GetRootGameObjects();
-
-            List<GameObject> currentSceneObjects = GetAllObjects(rootGameObjects);
+            Dictionary<GameObject, List<Component>> componentsMap = FetchComponentsMap(rootGameObjects);
 
             for (int i = 0; i < s_Tasks.Count; i++)
             {
                 s_Tasks[i].OnPostprocessScene(currentScene);
-                for (int j = 0; j < currentSceneObjects.Count; j++)
+                foreach (var pair in componentsMap)
                 {
-                    List<Component> allObjectComponents = GetAllComponents(currentSceneObjects[j]);
-                    s_Tasks[i].OnPostprocessGameObject(currentSceneObjects[j], allObjectComponents);
+                    var gameObject = pair.Key;
+                    var components = pair.Value;
+
+                    if (gameObject == null)
+                        continue;
+
+                    s_Tasks[i].OnPostprocessGameObject(gameObject, components);
                 }
             }
+
         }
 
-        private static List<GameObject> GetAllObjects(GameObject[] rootGameObjects)
+        static Dictionary<GameObject, List<Component>> FetchComponentsMap(GameObject[] rootGameObjects)
         {
-            List<GameObject> allObjects = new List<GameObject>();
-            
+            var componentsMap = new Dictionary<GameObject, List<Component>>();
             for (int i = 0; i < rootGameObjects.Length; i++)
             {
-                var componentsInChildren =
-                    rootGameObjects[i].GetComponentsInChildren<Transform>();
+                if(rootGameObjects[i] == null)
+                    continue;
 
-                for (int j = 0; j < componentsInChildren.Length; j++)
-                {
-                    allObjects.Add(componentsInChildren[j].gameObject);
-                }
+                StoreObjectsAndComponents(rootGameObjects[i], componentsMap);
             }
-
-            return allObjects;
+            return componentsMap;
         }
-        
-        private static List<Component> GetAllComponents(GameObject rootObject)
+
+        static readonly List<Transform> s_TempTransformsCollection = new List<Transform>();
+        static readonly List<Component> s_TempComponentsCollection = new List<Component>();
+        static void StoreObjectsAndComponents(GameObject rootGameObject, Dictionary<GameObject, List<Component>> componentsMap)
         {
-            List<Component> allComponents = rootObject.GetComponents(typeof(MonoBehaviour)).ToList();
-            
-            return allComponents;
+            s_TempTransformsCollection.Clear();
+            s_TempComponentsCollection.Clear();
+            rootGameObject.GetComponentsInChildren<Transform>(s_TempTransformsCollection);
+            rootGameObject.GetComponentsInChildren<Component>(s_TempComponentsCollection);
+
+            for (var i = 0; i < s_TempComponentsCollection.Count; ++i)
+            {
+                var component = s_TempComponentsCollection[i];
+                if(component == null)
+                    continue;
+
+                if (componentsMap.TryGetValue(component.gameObject, out var components) == false)
+                {
+                    components = new List<Component>();
+                    componentsMap[component.gameObject] = components;
+                }
+                components.Add(component);
+            }
         }
     }
 }

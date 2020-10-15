@@ -11,10 +11,8 @@ namespace StansAssets.Build.Editor
 {
     class UnityPlayerBuildStep : IBuildStep
     {
-        public int Priority => 0;
-        public string Name => "UnityPlayerBuildStep";
-
         static List<IBuildTask> s_Tasks;
+
         IBuildContext m_BuildContext;
         Action<BuildStepResultArgs> m_OnCompleteCallback = delegate { };
 
@@ -65,7 +63,7 @@ namespace StansAssets.Build.Editor
 
             Scene currentScene = SceneManager.GetActiveScene();
             GameObject[] rootGameObjects = currentScene.GetRootGameObjects();
-            Dictionary<GameObject, List<Component>> componentsMap = FetchComponentsMap(rootGameObjects);
+            Dictionary<GameObject, List<Component>> componentsMap = GetComponentsMap(rootGameObjects);
 
             for (int i = 0; i < s_Tasks.Count; i++)
             {
@@ -81,10 +79,9 @@ namespace StansAssets.Build.Editor
                     s_Tasks[i].OnPostprocessGameObject(gameObject, components);
                 }
             }
-
         }
 
-        static Dictionary<GameObject, List<Component>> FetchComponentsMap(GameObject[] rootGameObjects)
+        static Dictionary<GameObject, List<Component>> GetComponentsMap(GameObject[] rootGameObjects)
         {
             var componentsMap = new Dictionary<GameObject, List<Component>>();
             for (int i = 0; i < rootGameObjects.Length; i++)
@@ -92,18 +89,15 @@ namespace StansAssets.Build.Editor
                 if(rootGameObjects[i] == null)
                     continue;
 
-                StoreObjectsAndComponents(rootGameObjects[i], componentsMap);
+                FetchHierarchy(rootGameObjects[i], componentsMap);
             }
             return componentsMap;
         }
 
-        static readonly List<Transform> s_TempTransformsCollection = new List<Transform>();
         static readonly List<Component> s_TempComponentsCollection = new List<Component>();
-        static void StoreObjectsAndComponents(GameObject rootGameObject, Dictionary<GameObject, List<Component>> componentsMap)
+        static void FetchHierarchy(GameObject rootGameObject, Dictionary<GameObject, List<Component>> componentsMap)
         {
-            s_TempTransformsCollection.Clear();
             s_TempComponentsCollection.Clear();
-            rootGameObject.GetComponentsInChildren<Transform>(s_TempTransformsCollection);
             rootGameObject.GetComponentsInChildren<Component>(s_TempComponentsCollection);
 
             for (var i = 0; i < s_TempComponentsCollection.Count; ++i)
@@ -120,5 +114,8 @@ namespace StansAssets.Build.Editor
                 components.Add(component);
             }
         }
+
+        public int Priority => 0;
+        public string Name => "UnityPlayerBuildStep";
     }
 }

@@ -5,15 +5,19 @@ namespace StansAssets.Build.Editor
    static class BuildHandler
    {
       [InitializeOnLoadMethod]
-      private static void Initialize()
+      static void Initialize()
       {
          BuildPlayerWindow.RegisterBuildPlayerHandler(RegisterBuildPlayer);
       }
 
-      private static void RegisterBuildPlayer(BuildPlayerOptions options)
+      static void RegisterBuildPlayer(BuildPlayerOptions options)
       {
          BuildExecutor.Settings.Reset();
-         BuildContext buildContext = new BuildContext(options, BuildExecutor.Settings);
+
+#if SCENE_MANAGEMENT_ENABLED
+         SceneManagement.Build.BuildScenesPreprocessor.SetupBuildOptions(ref options);
+#endif
+         var buildContext = new BuildContext(options, BuildExecutor.Settings);
          BuildExecutor.Build(buildContext);
       }
    }

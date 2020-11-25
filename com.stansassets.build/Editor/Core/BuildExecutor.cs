@@ -12,8 +12,8 @@ namespace StansAssets.Build.Editor
     [InitializeOnLoad]
     public static class BuildExecutor
     {
-        static List<IBuildStep> s_Steps = new List<IBuildStep>();
-        static List<IBuildTask> s_Tasks = new List<IBuildTask>();
+        static readonly List<IBuildStep> s_Steps = new List<IBuildStep>();
+        static readonly List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
         static IBuildStep s_CurrentStep;
 
@@ -22,7 +22,7 @@ namespace StansAssets.Build.Editor
         static BuildExecutor()
         {
             Settings = new BuildSettings();
-            RegisterListeners(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
+          //  RegisterListeners(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
         }
 
         /// <summary>

@@ -45,14 +45,14 @@ namespace StansAssets.Build.Editor
             BuildPlayerOptions defaultOptions = new BuildPlayerOptions())
         {
             // Fake buildLocation path to prevent exception
-            string locationPath = EditorUserBuildSettings.GetBuildLocation(EditorUserBuildSettings.activeBuildTarget);
+            var locationPath = EditorUserBuildSettings.GetBuildLocation(EditorUserBuildSettings.activeBuildTarget);
             if (locationPath.Length == 0)
             {
                 EditorUserBuildSettings.SetBuildLocation(EditorUserBuildSettings.activeBuildTarget, DefaultBuildLocation);
             }
 
             // Get static internal "GetBuildPlayerOptionsInternal" method
-            MethodInfo method = typeof(BuildPlayerWindow.DefaultBuildMethods).GetMethod(
+            var method = typeof(BuildPlayerWindow.DefaultBuildMethods).GetMethod(
                 "GetBuildPlayerOptionsInternal",
                 BindingFlags.NonPublic | BindingFlags.Static);
 

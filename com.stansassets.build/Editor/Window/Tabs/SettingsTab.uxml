@@ -1,36 +1,53 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
          xmlns:sa="StansAssets.Foundation.UIElements">
-    <sa:SettingsBlock
-            label="If you need to increment the build number for the phone system, keeping it in a Google spreadsheet, then download com.stansassets.google-doc-connector-pro"
-            name="block-google-doc-connector-pro">
-        <ui:Button text="Download com.stansassets.google-doc-connector-pro" name="download-google-doc-connector-pro"/>
-    </sa:SettingsBlock>
-    <sa:SettingsBlock>
-        <ui:Toggle label="Increment build number and save it to google spreadsheet" name="incrementBuildNumber-toggle"/>
-    </sa:SettingsBlock>
-    <sa:SettingsBlock class="block-spreadsheet-id" name="block-spreadsheet-id">
-        <ui:Label text="Enter spreadsheet ID to save build data" name="Label" class="label-spreadsheet-id"/>
-        <ui:VisualElement class="row">
-            <ui:TextField picking-mode="Ignore" name="spreadsheetIdText" class="spreadsheet-id"/>
-            <ui:Button text="Save Id" name="save-id"/>
-        </ui:VisualElement>
-    </sa:SettingsBlock>
-    <sa:SettingsBlock label="List of mask branches to increase the build number" class="block-spreadsheet-id"
-                      name="block-mask">
-        <ui:VisualElement name="listMask" class="row list-mask">
-        </ui:VisualElement>
-        <ui:VisualElement class="row">
-            <ui:TextField value="Paste mask branches to increase the build number" picking-mode="Ignore"
-                          name="mask-text" class="spreadsheet-id"/>
-            <ui:Button text="Add" name="add-mask"/>
-        </ui:VisualElement>
-        <ui:Button text="Remove all masks" name="clear-mask"/>
-    </sa:SettingsBlock>
+
     <sa:SettingsBlock label="Build Pipeline">
-        <ui:Button name="refreshBtn" class="btn-refresh" tooltip="Refresh Build Steps and Build Tasks"/>
+        <ui:Button name="refreshBtn" class="btn-refresh-pipelines" tooltip="Refresh Build Steps and Build Tasks"/>
         <ui:Label text="Build Steps" name="labelBuildStep" class="label-build-entity"/>
         <ui:VisualElement name="listBuildStep" class="list-build-entity"/>
         <ui:Label text="Build Tasks" name="labelBuildTask" class="label-build-entity"/>
         <ui:VisualElement name="listBuildTask" class="list-build-entity"/>
+    </sa:SettingsBlock>
+
+    <sa:SettingsBlock name="version-increment" label="Build Version Increment">
+        <ui:VisualElement name="google-doc-installed-block">
+            <sa:HelpBox type="Info" name="note"
+                        text="Automated build number increment during build"/>
+
+            <ui:VisualElement name="space" class="space"/>
+            <ui:Toggle label="Enabled" name="incrementBuildNumber-toggle"/>
+            <ui:VisualElement name="spreadsheetPanel" class="spreadsheet-panel">
+                <ui:VisualElement class="row">
+                    <ui:VisualElement name="list-spreadsheet"/>
+                    <ui:VisualElement class="flexible-space"/>
+                    <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
+                        <ui:Button name="openBtn" class="spreadsheet-url-copy btn-left"
+                                   tooltip="Open spreadsheet in browser."/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="spreadsheetBottomPanel" class="spreadsheet-bottom-panel">
+                    <ui:Label text="" name="statusIcon" class="status-icon-green"/>
+                    <ui:Label text="Ready to use." class="spreadsheet-date"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label text="Branch Masks"  class="branch-masks-title"/>
+            <ui:VisualElement class="branch-masks">
+                <ui:VisualElement name="listMask" class="row list-mask">
+                </ui:VisualElement>
+                <ui:VisualElement class="row">
+                    <ui:TextField value="Paste mask branches to increase the build number" picking-mode="Ignore"
+                                  name="mask-text" class="spreadsheet-id"/>
+                    <ui:Button text="Add" name="add-mask"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+
+        <ui:VisualElement name="google-doc-missing-block">
+            <sa:HelpBox type="Info" name="note"
+                        text="Google Doc connector plugin is required for this feature to work."/>
+            <ui:Button text="Download com.stansassets.google-doc-connector-pro" name="download-google-doc-connector-pro"/>
+        </ui:VisualElement>
     </sa:SettingsBlock>
 </ui:UXML>

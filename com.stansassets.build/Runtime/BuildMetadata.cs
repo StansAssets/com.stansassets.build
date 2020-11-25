@@ -11,49 +11,55 @@ namespace StansAssets.Build
     {
         [SerializeField]
         long m_BuildTime;
-        
+
         [SerializeField]
         double m_CommitTimeUnix;
-        
+
         DateTime m_BuildTimeDate = DateTime.MinValue;
         DateTime m_CommitTimeDate = DateTime.MinValue;
-        
+
         /// <summary>
         /// True if working copy had local changes during the build.
         /// </summary>
         [field: SerializeField]
         public bool HasChangesInWorkingCopy { get; internal set; }
-        
+
         /// <summary>
         /// Repository branch name.
         /// </summary>
         [field: SerializeField]
         public string BranchName { get; internal set; }
-        
+
         /// <summary>
         /// Hash string which identifies this commit
         /// </summary>
         [field: SerializeField]
         public string CommitHash { get; internal set; }
-        
+
         /// <summary>
         /// Short version of a hash string which identifies this commit.
         /// </summary>
         [field: SerializeField]
         public string CommitShortHash { get; internal set; }
-        
+
+        /// <summary>
+        /// 7 symbols hash like the one used by GitHub UI.
+        /// </summary>
+        [field: SerializeField]
+        public string GitCommitHubHash { get; internal set; }
+
         /// <summary>
         /// Commit message that identifies changes.
         /// </summary>
         [field: SerializeField]
         public string CommitMessage { get; internal set; }
-        
+
         /// <summary>
         /// The note left by a person who made this build.
         /// </summary>
         [field: SerializeField]
         public string Note { get; internal set; }
-        
+
         /// <summary>
         /// The name of machine that was used to produce this build
         /// </summary>
@@ -77,7 +83,7 @@ namespace StansAssets.Build
                 return m_BuildTimeDate;
             }
         }
-        
+
         /// <summary>
         /// Time when commit was made.
         /// To print in a nice formatted way,
@@ -108,7 +114,7 @@ namespace StansAssets.Build
         /// </summary>
         [field: SerializeField]
         public int BuildNumber { get; internal set; }
-        
+
         internal void SetBuildTime(long ticks)
         {
             m_BuildTime = ticks;

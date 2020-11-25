@@ -5,7 +5,7 @@ namespace StansAssets.Build.Editor
 {
     static class BuildSystemEditorMenu
     {
-        [MenuItem(PackagesConfigEditor.RootMenu + "/" + BuildSystemPackage.DisplayName + "/Settings", false, 0)]
+        [MenuItem(PluginsDevKitPackage.RootMenu + "/" + BuildSystemPackage.DisplayName + "/Settings", false, 0)]
         public static void OpenSettingsTest()
         {
             var headerContent = BuildSystemSettingsWindow.WindowTitle;

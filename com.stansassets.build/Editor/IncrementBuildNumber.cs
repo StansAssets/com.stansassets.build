@@ -17,7 +17,7 @@ namespace StansAssets.Build.Editor
         static int s_LastBuildNumberAndroid;
         static string s_LastBuildNumberIOS;
 
-        internal static void Increment(BuildMetadata buildMetadata)
+        internal static void Increment(BuildMetadata buildMetadata, BuildTarget buildTarget)
         {
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
             var firstOrDefault = BuildSystemSettings.Instance.MaskList.FirstOrDefault(m => Regex.IsMatch(buildMetadata.BranchName, m));
@@ -25,18 +25,18 @@ namespace StansAssets.Build.Editor
             s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
             s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
 
-            if (firstOrDefault != null)
-            {
+          //  if (firstOrDefault != null)
+          //  {
                 try
                 {
-                    SaveBuildMetadata(buildMetadata);
+                    SaveBuildMetadata(buildMetadata, buildTarget);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     throw;
                 }
-            }
+           // }
 #endif
         }
 
@@ -49,7 +49,7 @@ namespace StansAssets.Build.Editor
         }
 
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
-        static void SaveBuildMetadata(BuildMetadata buildMetadata)
+        static void SaveBuildMetadata(BuildMetadata buildMetadata, BuildTarget buildTarget)
         {
             var spreadsheet = new Spreadsheet(BuildSystemSettings.Instance.SpreadsheetId);
             spreadsheet.Load();
@@ -59,12 +59,13 @@ namespace StansAssets.Build.Editor
                 throw new Exception(spreadsheet.SyncErrorMassage);
             }
 
-            var sheetList = spreadsheet.Sheets.FirstOrDefault(sh => sh.Name == buildMetadata.Version);
-            var rangeAppend = $"{buildMetadata.Version}!A:K";
+            var sheetName = $"{buildMetadata.Version} - {buildTarget}";
+            var versionsSheet = spreadsheet.Sheets.FirstOrDefault(sh => sheetName.Equals(sh.Name));
+            var rangeAppend = $"{sheetName}!A:K";
             var buildNumber = 0;
-            if (sheetList == null)
+            if (versionsSheet == null)
             {
-                spreadsheet.CreateGoogleSheet(buildMetadata.Version);
+                spreadsheet.CreateGoogleSheet(sheetName);
                 spreadsheet.AppendGoogleCell(rangeAppend, s_Headers);
                 if (spreadsheet.SyncErrorMassage != null)
                 {
@@ -74,7 +75,10 @@ namespace StansAssets.Build.Editor
             }
             else
             {
-                buildNumber = sheetList.GetCell(sheetList.Rows.Count() - 1, 0).GetValue<int>();
+                var cell = versionsSheet.GetCell(versionsSheet.Rows.Count() - 1, 0);
+                buildNumber = cell != null
+                    ? versionsSheet.GetCell(versionsSheet.Rows.Count() - 1, 0).GetValue<int>()
+                    : 0;
             }
 
             buildMetadata.BuildNumber = buildNumber + 1;

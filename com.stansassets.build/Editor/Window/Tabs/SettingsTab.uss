@@ -54,7 +54,7 @@
     flex-shrink: 0;
 }
 
-.btn-refresh {
+.btn-refresh-pipelines {
     background-image: url('Resources/refresh.png');
     width: 16px;
     height: 16px;
@@ -87,3 +87,17 @@
     -unity-font-style: italic;
 }
 
+.space {
+    margin-top: 5px;
+}
+
+.branch-masks-title {
+    -unity-font-style: bold;
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.branch-masks {
+    padding-left: 10px;
+}

@@ -11,7 +11,18 @@ namespace StansAssets.Git
         public string Amend() => SendRequest("commit --amend");
         public string Hash => SendRequest("rev-parse HEAD").Trim();
         public string ShortHash => SendRequest("rev-parse --short HEAD").Trim();
-        
+
+        public string GitHubHash {
+            get {
+                var shortHash = ShortHash;
+                if (!string.IsNullOrEmpty(shortHash) && shortHash.Length > 7) {
+                    return shortHash.Substring(0, 7);
+                }
+
+                return shortHash;
+            }
+        }
+
         public string Message => SendRequest("show -s --format=%s").Trim();
         public double UnixTimestamp
         {
@@ -20,7 +31,7 @@ namespace StansAssets.Git
                 var time = SendRequest("show -s --format=%ct").Trim();
                 if (string.IsNullOrEmpty(time))
                     return 0;
-                
+
                 return Convert.ToDouble(time);
             }
         }

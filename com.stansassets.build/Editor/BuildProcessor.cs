@@ -21,10 +21,10 @@ namespace StansAssets.Build.Editor
         public void OnPreprocessBuild(BuildReport report)
         {
             var buildMetadata = CreateBuildMetadata();
-            IncrementBuildNumberEnable = BuildSystemSettings.Instance.IncrementBuildNumberEnable && StanAssetsPackages.IsGoogleDocConnectorProInstalled;
+            IncrementBuildNumberEnable = BuildSystemSettings.Instance.AutomatedBuildNumberIncrement && StanAssetsPackages.IsGoogleDocConnectorProInstalled;
             if (IncrementBuildNumberEnable)
             {
-                IncrementBuildNumber.Increment(buildMetadata);
+                IncrementBuildNumber.Increment(buildMetadata, report.summary.platform);
             }
 
             switch (report.summary.platform)
@@ -58,9 +58,10 @@ namespace StansAssets.Build.Editor
             var meta = ScriptableObject.CreateInstance<BuildMetadata>();
             var git = Gits.GetFromCurrentDirectory();
             meta.HasChangesInWorkingCopy = git.WorkingCopy.HasChanges;
-            meta.BranchName = git.Branch.Name;
+            meta.BranchName = "master";// git.Branch.Name;
             meta.CommitHash = git.Commit.Hash;
             meta.CommitShortHash = git.Commit.ShortHash;
+            meta.GitCommitHubHash = git.Commit.GitHubHash;
             meta.CommitMessage = git.Commit.Message;
             meta.SetCommitTime(git.Commit.UnixTimestamp);
             meta.SetBuildTime(DateTime.Now.Ticks);

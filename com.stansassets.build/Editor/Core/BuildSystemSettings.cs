@@ -10,22 +10,35 @@ namespace StansAssets.Build.Editor
         public override string PackageName => "com.stansassets.build";
         protected override bool IsEditorOnly => true;
 
-        public string SpreadsheetId => m_SpreadsheetId;
         [SerializeField]
         string m_SpreadsheetId;
 
-        public IEnumerable<string> MaskList => m_MaskList;
+        [SerializeField]
+        bool m_AutomatedBuildNumberIncrement;
+
         [SerializeField]
         List<string> m_MaskList = new List<string>();
 
-        public bool IncrementBuildNumberEnable => m_IncrementBuildNumberEnable;
-        [SerializeField]
-        bool m_IncrementBuildNumberEnable;
+        public IEnumerable<string> MaskList => m_MaskList;
 
-        public void SetSpreadsheetId(string id)
+        public bool AutomatedBuildNumberIncrement
         {
-            m_SpreadsheetId = id;
-            Save();
+            get => m_AutomatedBuildNumberIncrement;
+            internal set
+            {
+                m_AutomatedBuildNumberIncrement = value;
+                Save();
+            }
+        }
+
+        public string SpreadsheetId
+        {
+            get => m_SpreadsheetId;
+            internal set
+            {
+                m_SpreadsheetId = value;
+                Save();
+            }
         }
 
         public void AddMask(string mask)
@@ -43,12 +56,6 @@ namespace StansAssets.Build.Editor
         public void ClearMaskList()
         {
             m_MaskList.Clear();
-            Save();
-        }
-
-        public void IncrementBuildNumberEnableSet(bool value)
-        {
-            m_IncrementBuildNumberEnable = value;
             Save();
         }
 

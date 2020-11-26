@@ -22,7 +22,8 @@ namespace StansAssets.Build.Editor
         static BuildExecutor()
         {
             Settings = new BuildSettings();
-          //  RegisterListeners(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
+
+            ExecuteRegistrationProcess(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
         }
 
         /// <summary>
@@ -51,12 +52,7 @@ namespace StansAssets.Build.Editor
         {
             s_BuildContext = buildContext;
 
-            RegisterListeners(buildContext);
-
-            RegisterUnityPlayerBuildStep();
-            SortTasks();
-            SortSteps();
-
+            ExecuteRegistrationProcess(s_BuildContext);
 
             RunNextStep();
         }
@@ -89,6 +85,15 @@ namespace StansAssets.Build.Editor
             {
                 listener.Register(buildContext);
             }
+        }
+
+        static void ExecuteRegistrationProcess(IBuildContext buildContext)
+        {
+            RegisterListeners(buildContext);
+            RegisterUnityPlayerBuildStep();
+
+            SortTasks();
+            SortSteps();
         }
 
         static void SortSteps()

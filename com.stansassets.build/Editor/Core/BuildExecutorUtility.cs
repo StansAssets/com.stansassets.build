@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -11,9 +12,23 @@ namespace StansAssets.Build.Editor
     static class BuildExecutorUtility
     {
         public static BuildPlayerOptions BuildPlayerOptions => GetBuildPlayerOptions(false, new BuildPlayerOptions());
-        public static string DefaultBuildLocation => Path.Combine(Path.GetDirectoryName(Application.dataPath) ?? throw new UnityException("Application.dataPath is null!"),
-                                                                  "Builds",
-                                                                  EditorUserBuildSettings.activeBuildTarget.ToString());
+
+        public static string DefaultBuildLocation
+        {
+            get
+            {
+                string projectPath = Path.GetDirectoryName(Application.dataPath);
+                var buildLocation = CombinePaths(projectPath ?? throw new UnityException($"Project path is null: {Application.dataPath}"),
+                    "Builds",
+                    EditorUserBuildSettings.activeBuildTarget.ToString());
+
+                if (!Directory.Exists(buildLocation))
+                {
+                    Directory.CreateDirectory(buildLocation);
+                }
+                return buildLocation;
+            }
+        }
 
         public static void CheckListenerPriorities(IEnumerable<IBuildExecutorListener> listenersToCheck)
         {
@@ -40,23 +55,33 @@ namespace StansAssets.Build.Editor
             }
         }
 
+        static string CombinePaths(params string[] paths)
+        {
+            return string.Join("/", paths);
+        }
+
         static BuildPlayerOptions GetBuildPlayerOptions(
             bool askForLocation = false,
             BuildPlayerOptions defaultOptions = new BuildPlayerOptions())
         {
-            // Fake buildLocation path to prevent exception
-            var locationPath = EditorUserBuildSettings.GetBuildLocation(EditorUserBuildSettings.activeBuildTarget);
-            if (locationPath.Length == 0)
+            // Fake BuildLocation path to prevent Unity exception
+            var activeBuildTarget = EditorUserBuildSettings.activeBuildTarget;
+            var buildLocation = EditorUserBuildSettings.GetBuildLocation(activeBuildTarget);
+            // Making sure that current BuildLocation is valid, otherwise create new proper one.
+            // New created location will be like: .../<ProjectRoot>/Builds/<BuildTarget>
+            switch (InternalEditorUtility.BuildCanBeAppended(activeBuildTarget,buildLocation))
             {
-                EditorUserBuildSettings.SetBuildLocation(EditorUserBuildSettings.activeBuildTarget, DefaultBuildLocation);
+                case CanAppendBuild.No:
+                    string newBuildLocation = CombinePaths(DefaultBuildLocation, "build");
+                    EditorUserBuildSettings.SetBuildLocation(activeBuildTarget, newBuildLocation);
+                    break;
             }
 
-            // Get static internal "GetBuildPlayerOptionsInternal" method
+            // Get static internal "GetBuildPlayerOptionsInternal" method and invoke it
             var method = typeof(BuildPlayerWindow.DefaultBuildMethods).GetMethod(
                 "GetBuildPlayerOptionsInternal",
                 BindingFlags.NonPublic | BindingFlags.Static);
 
-            // invoke internal method
             return (BuildPlayerOptions)method.Invoke(
                 null,
                 new object[] { askForLocation, defaultOptions});

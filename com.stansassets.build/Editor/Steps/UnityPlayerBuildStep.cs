@@ -11,14 +11,15 @@ namespace StansAssets.Build.Editor
 {
     class UnityPlayerBuildStep : IBuildStep
     {
-        static List<IBuildTask> s_Tasks;
+        static List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
         IBuildContext m_BuildContext;
         Action<BuildStepResultArgs> m_OnCompleteCallback = delegate { };
 
         public UnityPlayerBuildStep(List<IBuildTask> tasks)
         {
-            s_Tasks = tasks;
+            s_Tasks.Clear();
+            s_Tasks.AddRange(tasks);
         }
 
         public void Execute(IBuildContext buildContext, Action<BuildStepResultArgs> onComplete = null)
@@ -58,7 +59,7 @@ namespace StansAssets.Build.Editor
         [PostProcessScene(1)]
         static void RunTasks()
         {
-            if(Application.isPlaying)
+            if(Application.isPlaying || !s_Tasks.Any())
                 return;
 
             Scene currentScene = SceneManager.GetActiveScene();

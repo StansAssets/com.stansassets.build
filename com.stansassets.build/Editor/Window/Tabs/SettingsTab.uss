@@ -101,3 +101,25 @@
 .branch-masks {
     padding-left: 10px;
 }
+
+.add-extra-field {
+    width: 150px;
+    align-self: flex-end;
+}
+
+.remove-extra-field {
+    width: 50px;
+}
+
+.extra-filed-item {
+    flex-direction: row;
+}
+
+.wide-text-field {
+    flex-grow: 1;
+    align-items: flex-start;
+}
+
+.wide-text-field > Label {
+    min-width: 40px;
+}

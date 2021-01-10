@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using StansAssets.Plugins;
 using UnityEngine;
 
@@ -14,11 +13,18 @@ namespace StansAssets.Build.Editor
         string m_SpreadsheetId;
 
         [SerializeField]
+        string m_GitHubRepository;
+
+        [SerializeField]
+        List<ExtraField> m_ExtraFields = new List<ExtraField>();
+
+        [SerializeField]
         bool m_AutomatedBuildNumberIncrement;
 
         [SerializeField]
         List<string> m_MaskList = new List<string>();
 
+        public List<ExtraField> ExtraFields => m_ExtraFields;
         public IEnumerable<string> MaskList => m_MaskList;
 
         public bool AutomatedBuildNumberIncrement
@@ -41,6 +47,16 @@ namespace StansAssets.Build.Editor
             }
         }
 
+        public string GitHubRepository
+        {
+            get => m_GitHubRepository;
+            internal set
+            {
+                m_GitHubRepository = value;
+                Save();
+            }
+        }
+
         public void AddMask(string mask)
         {
             m_MaskList.Add(mask);
@@ -50,6 +66,12 @@ namespace StansAssets.Build.Editor
         public void RemoveMask(string mask)
         {
             m_MaskList.Remove(mask);
+            Save();
+        }
+
+        public void AddNewExtraField()
+        {
+            m_ExtraFields.Add(new ExtraField());
             Save();
         }
 

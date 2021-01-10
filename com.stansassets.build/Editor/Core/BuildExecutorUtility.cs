@@ -69,10 +69,12 @@ namespace StansAssets.Build.Editor
             var buildLocation = EditorUserBuildSettings.GetBuildLocation(activeBuildTarget);
             // Making sure that current BuildLocation is valid, otherwise create new proper one.
             // New created location will be like: .../<ProjectRoot>/Builds/<BuildTarget>
+
             switch (InternalEditorUtility.BuildCanBeAppended(activeBuildTarget,buildLocation))
             {
                 case CanAppendBuild.No:
-                    string newBuildLocation = CombinePaths(DefaultBuildLocation, "build");
+                case CanAppendBuild.Unsupported:
+                    var newBuildLocation = CombinePaths(DefaultBuildLocation, "build");
                     EditorUserBuildSettings.SetBuildLocation(activeBuildTarget, newBuildLocation);
                     break;
             }

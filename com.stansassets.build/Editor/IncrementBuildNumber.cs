@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
+using StansAssets.Foundation;
 using StansAssets.GoogleDoc;
 #endif
 using UnityEditor;
@@ -12,7 +13,7 @@ namespace StansAssets.Build.Editor
 {
     static class IncrementBuildNumber
     {
-        static readonly List<object> s_Headers = new List<object> { "Build Number", "Version", "Has Changes In Working Copy", "BranchName", "Commit Hash", "Commit Short Hash", "Commit Message", "Note", "Machine Name", "Build Time", "Commit Time" };
+        static readonly List<object> s_Headers = new List<object> { "Build Number", "Version", "Machine Name", "Branch", "Commit Message", "Commit", "Build Time", "Commit Time" };
 
         static int s_LastBuildNumberAndroid;
         static string s_LastBuildNumberIOS;
@@ -25,8 +26,8 @@ namespace StansAssets.Build.Editor
             s_LastBuildNumberAndroid = PlayerSettings.Android.bundleVersionCode;
             s_LastBuildNumberIOS = PlayerSettings.iOS.buildNumber;
 
-          //  if (firstOrDefault != null)
-          //  {
+            if (firstOrDefault != null || !BuildSystemSettings.Instance.MaskList.Any())
+            {
                 try
                 {
                     SaveBuildMetadata(buildMetadata, buildTarget);
@@ -36,7 +37,11 @@ namespace StansAssets.Build.Editor
                     Console.WriteLine(e);
                     throw;
                 }
-           // }
+            }
+            else
+            {
+                Debug.Log($"Build Increment skipped, no matched branch mask found for the {buildMetadata.BranchName} branch. ");
+            }
 #endif
         }
 
@@ -51,6 +56,17 @@ namespace StansAssets.Build.Editor
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
         static void SaveBuildMetadata(BuildMetadata buildMetadata, BuildTarget buildTarget)
         {
+            foreach (var extraField in BuildSystemSettings.Instance.ExtraFields)
+            {
+                s_Headers.Add(extraField.Name);
+            }
+
+            if (string.IsNullOrEmpty(BuildSystemSettings.Instance.SpreadsheetId))
+            {
+                Debug.LogError("Versions Spreadsheet Id is empty");
+                return;
+            }
+
             var spreadsheet = new Spreadsheet(BuildSystemSettings.Instance.SpreadsheetId);
             spreadsheet.Load();
             if (spreadsheet.SyncErrorMassage != null)
@@ -85,20 +101,55 @@ namespace StansAssets.Build.Editor
             Debug.LogWarning("Setting build number to " + buildMetadata.BuildNumber);
             PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
             PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
-            spreadsheet.AppendGoogleCell(rangeAppend, new List<object>()
+
+
+            var commitValue = buildMetadata.CommitShortHash;
+            if (!string.IsNullOrEmpty(BuildSystemSettings.Instance.GitHubRepository))
+            {
+                commitValue = $"=HYPERLINK(\"https://github.com/{BuildSystemSettings.Instance.GitHubRepository}/commit/{buildMetadata.CommitHash}\",\"{buildMetadata.CommitShortHash}\")";
+            }
+
+            if (UnityCloudBuildHooks.IsRunningOnUnityCloud)
+            {
+                var manifest = (TextAsset) Resources.Load("UnityCloudBuildManifest.json");
+                if (manifest != null)
+                {
+                    var manifestDict = Json.Deserialize(manifest.text) as Dictionary<string,object>;
+                    foreach (var kvp in manifestDict)
+                    {
+                        // Be sure to check for null values!
+                        var value = kvp.Value != null ? kvp.Value.ToString() : string.Empty;
+
+                        foreach (var extraField in BuildSystemSettings.Instance.ExtraFields)
+                        {
+                            extraField.Value = extraField.Value.Replace("{" + kvp.Key + "}", value);
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("[IncrementBuildNumber] UnityCloudBuildManifest.json not found");
+                }
+            }
+
+            var appendList = new List<object>
             {
                 buildMetadata.BuildNumber,
                 buildMetadata.Version,
-                buildMetadata.HasChangesInWorkingCopy,
-                buildMetadata.BranchName,
-                buildMetadata.CommitHash,
-                buildMetadata.CommitShortHash,
-                buildMetadata.CommitMessage,
-                buildMetadata.Note,
                 buildMetadata.MachineName,
+                buildMetadata.BranchName,
+                buildMetadata.CommitMessage,
+                commitValue,
                 buildMetadata.BuildTime.ToString("G"),
                 buildMetadata.CommitTime.ToString("G")
-            });
+            };
+
+            foreach (var extraField in BuildSystemSettings.Instance.ExtraFields)
+            {
+                appendList.Add(extraField.Value);
+            }
+
+            spreadsheet.AppendGoogleCell(rangeAppend, appendList);
             if (spreadsheet.SyncErrorMassage != null)
             {
                 Debug.LogError(spreadsheet.SyncErrorMassage);

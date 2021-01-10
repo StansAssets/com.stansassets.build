@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEditor.Callbacks;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace StansAssets.Build.Editor
@@ -15,14 +16,14 @@ namespace StansAssets.Build.Editor
         static readonly string k_BuildMetadataPath = $"Assets/Resources/{nameof(BuildMetadata)}.asset";
         static string BuildMetadataDirectoryPath => Path.GetDirectoryName(k_BuildMetadataPath);
 
-        static bool IncrementBuildNumberEnable;
+        static bool s_IncrementBuildNumberEnable;
         public int callbackOrder => k_CallbackOrder;
 
         public void OnPreprocessBuild(BuildReport report)
         {
             var buildMetadata = CreateBuildMetadata();
-            IncrementBuildNumberEnable = BuildSystemSettings.Instance.AutomatedBuildNumberIncrement && StanAssetsPackages.IsGoogleDocConnectorProInstalled;
-            if (IncrementBuildNumberEnable)
+            s_IncrementBuildNumberEnable = BuildSystemSettings.Instance.AutomatedBuildNumberIncrement && StanAssetsPackages.IsGoogleDocConnectorProInstalled;
+            if (s_IncrementBuildNumberEnable)
             {
                 IncrementBuildNumber.Increment(buildMetadata, report.summary.platform);
             }
@@ -46,8 +47,9 @@ namespace StansAssets.Build.Editor
         [PostProcessBuild(k_CallbackOrder)]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
+            Debug.LogWarning("[LOG] OnPostprocessBuild called");
             DeleteBuildMetadata();
-            if (IncrementBuildNumberEnable)
+            if (s_IncrementBuildNumberEnable)
             {
                 IncrementBuildNumber.Decrement();
             }
@@ -58,7 +60,7 @@ namespace StansAssets.Build.Editor
             var meta = ScriptableObject.CreateInstance<BuildMetadata>();
             var git = Gits.GetFromCurrentDirectory();
             meta.HasChangesInWorkingCopy = git.WorkingCopy.HasChanges;
-            meta.BranchName = "master";// git.Branch.Name;
+            meta.BranchName = git.Branch.Name;
             meta.CommitHash = git.Commit.Hash;
             meta.CommitShortHash = git.Commit.ShortHash;
             meta.GitCommitHubHash = git.Commit.GitHubHash;
@@ -67,6 +69,7 @@ namespace StansAssets.Build.Editor
             meta.SetBuildTime(DateTime.Now.Ticks);
 
             meta.MachineName = SystemInfo.deviceName;
+            meta.FullUnityVersion = InternalEditorUtility.GetFullUnityVersion();
             return meta;
         }
 

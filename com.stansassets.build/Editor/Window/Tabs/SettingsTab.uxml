@@ -31,7 +31,9 @@
                 </ui:VisualElement>
             </ui:VisualElement>
 
-            <ui:Label text="Branch Masks"  class="branch-masks-title"/>
+            <ui:Label text="Branch Masks (optional)"  class="branch-masks-title"/>
+            <sa:HelpBox type="Info" name="branch-masks-help-box"
+                        text="Define branch rules to participate in auto versions increment. For example master, develop, staging/*, etc."/>
             <ui:VisualElement class="branch-masks">
                 <ui:VisualElement name="listMask" class="row list-mask">
                 </ui:VisualElement>
@@ -41,6 +43,22 @@
                     <ui:Button text="Add" name="add-mask"/>
                 </ui:VisualElement>
             </ui:VisualElement>
+
+            <ui:Label text="GitHub repository (optional)"  class="branch-masks-title"/>
+            <sa:HelpBox type="Info" name="github-help-box"
+                        text="Should be set in format company-name/repository-name"/>
+            <ui:VisualElement class="branch-masks">
+                <ui:TextField value="" picking-mode="Ignore" name="git-repo-text" class="spreadsheet-id"/>
+            </ui:VisualElement>
+
+            <ui:Label text="Extra Spreadsheet fields (optional)"  class="branch-masks-title"/>
+            <sa:HelpBox type="Info" name="github-help-box"
+                        text="You can set additional fields to be filled during build increment process. See the documentation for the support variables."/>
+            <ui:VisualElement class="branch-masks">
+                <ui:VisualElement name="extra-fields-container"/>
+                <ui:Button text="Add Field" name="add-extra-field" class="add-extra-field" />
+            </ui:VisualElement>
+
         </ui:VisualElement>
 
 

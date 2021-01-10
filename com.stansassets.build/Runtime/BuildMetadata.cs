@@ -67,6 +67,12 @@ namespace StansAssets.Build
         public string MachineName { get; internal set; }
 
         /// <summary>
+        /// The full Unity version string. See `InternalEditorUtility.GetFullUnityVersion()` for more details.
+        /// </summary>
+        [field: SerializeField]
+        public string FullUnityVersion { get; internal set; }
+
+        /// <summary>
         /// Time when build was made.
         /// To print in a nice formatted way,
         /// check an article <see href="https://www.c-sharpcorner.com/blogs/date-and-time-format-in-c-sharp-programming1">here</see>.

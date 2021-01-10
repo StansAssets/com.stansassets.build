@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+
+    <ui:VisualElement name="extra-filed-item" class="extra-filed-item">
+        <ui:TextField label="name" name="extra-filed-name" class="wide-text-field"/>
+        <ui:TextField label="value" name="extra-filed-value" class="wide-text-field"/>
+        <ui:Button text="-" name="remove-extra-filed" class="remove-extra-field" />
+    </ui:VisualElement>
+
+</ui:UXML>

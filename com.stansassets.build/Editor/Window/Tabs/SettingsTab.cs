@@ -5,12 +5,13 @@ using JetBrains.Annotations;
 using StansAssets.Foundation.Editor;
 using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
 using StansAssets.GoogleDoc;
+
 #endif
 
 namespace StansAssets.Build.Editor
@@ -27,7 +28,6 @@ namespace StansAssets.Build.Editor
         VisualElement m_SpreadsheetsListContainer;
         VisualElement m_ListMask;
         TextField m_MaskText;
-
 
         const string k_DefaultSpreadsheetField = "None";
 
@@ -58,7 +58,6 @@ namespace StansAssets.Build.Editor
             var automatedBuildNumber = BuildSystemSettings.Instance.AutomatedBuildNumberIncrement;
             incrementBuildNumberToggle.SetValueWithoutNotify(automatedBuildNumber);
 
-
             var googleDocMissingBlock = this.Q("google-doc-missing-block");
             var googleDocInstalledBlock = this.Q("google-doc-installed-block");
 
@@ -73,7 +72,6 @@ namespace StansAssets.Build.Editor
                 openBtn.clicked += () =>
                 {
                     Application.OpenURL(BuildVersionsSpreadsheet.Url);
-
                 };
                 CreateListSpreadsheet();
 #endif
@@ -98,15 +96,71 @@ namespace StansAssets.Build.Editor
 
             var addMask = this.Q<Button>("add-mask");
             addMask.clicked += AddMask;
+
+            var gitRepositoryName = this.Q<TextField>("git-repo-text");
+            gitRepositoryName.SetValueWithoutNotify(BuildSystemSettings.Instance.GitHubRepository);
+            gitRepositoryName.RegisterValueChangedCallback((e) =>
+            {
+                BuildSystemSettings.Instance.GitHubRepository = e.newValue;
+            });
+
+
+            RebindExtraFieldsList();
+            var addExtraFiledButton = this.Q<Button>("add-extra-field");
+            addExtraFiledButton.clicked += () =>
+            {
+                BuildSystemSettings.Instance.AddNewExtraField();
+                RebindExtraFieldsList();
+            };
         }
 
+        void RebindExtraFieldsList()
+        {
+            var extraFieldsContainer = this.Q("extra-fields-container");
+            extraFieldsContainer.Clear();
+
+            var extraFieldItemTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{BuildSystemPackage.WindowTabsPath}/SettingsExtraFieldItem.uxml");
+
+            foreach (var field in BuildSystemSettings.Instance.ExtraFields)
+            {
+                var item = extraFieldItemTree.CloneTree();
+                extraFieldsContainer.Add(item);
+
+                var nameField = item.Q<TextField>("extra-filed-name");
+                var valueField = item.Q<TextField>("extra-filed-value");
+                var removeButton = item.Q<Button>("remove-extra-filed");
+
+                nameField.SetValueWithoutNotify(field.Name);
+                nameField.RegisterValueChangedCallback(e =>
+                {
+                    field.Name = e.newValue;
+                    BuildSystemSettings.Save();
+                });
+
+                valueField.SetValueWithoutNotify(field.Value);
+                valueField.RegisterValueChangedCallback(e =>
+                {
+                    field.Value = e.newValue;
+                    BuildSystemSettings.Save();
+                });
+
+                removeButton.clicked += () =>
+                {
+                    BuildSystemSettings.Instance.ExtraFields.Remove(field);
+                    RebindExtraFieldsList();
+                };
+            }
+        }
+
+
+
+        void OnNameChange(ChangeEvent<string> evt, int fieldIndex) { }
 
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
         Spreadsheet BuildVersionsSpreadsheet => GoogleDocConnector.GetSpreadsheet(BuildSystemSettings.Instance.SpreadsheetId) ?? new Spreadsheet();
 
         void CreateListSpreadsheet()
         {
-
             m_SpreadsheetsListContainer.Clear();
             var listName = GoogleDocConnectorSettings.Instance.Spreadsheets.Where(v => v.Name != "<Spreadsheet>").Select(v => v.Name).ToList();
             listName.Add(k_DefaultSpreadsheetField);
@@ -153,9 +207,9 @@ namespace StansAssets.Build.Editor
         void DownloadGoogleDoc()
         {
             Application.OpenURL("https://github.com/StansAssets/com.stansassets.google-doc-connector-pro");
-           // StanAssetsPackages.AddStanAssetsPackage(StanAssetsPackages.GoogleDocConnectorProPackage, StanAssetsPackages.GoogleDocConnectorProPackageVersion);
-        }
 
+            // StanAssetsPackages.AddStanAssetsPackage(StanAssetsPackages.GoogleDocConnectorProPackage, StanAssetsPackages.GoogleDocConnectorProPackageVersion);
+        }
 
         public void SetBuildEntities([CanBeNull] IEnumerable<BuildStepEntity> buildStep, [CanBeNull] IEnumerable<BuildTaskEntity> buildTask)
         {

@@ -89,6 +89,9 @@ namespace StansAssets.Build.Editor
 
         static void ExecuteRegistrationProcess(IBuildContext buildContext)
         {
+            ClearSteps();
+            ClearTasks();
+
             RegisterListeners(buildContext);
             RegisterUnityPlayerBuildStep();
 
@@ -145,14 +148,11 @@ namespace StansAssets.Build.Editor
         static void OnStepFailed(BuildStepResultArgs stepExecuteResultArgs)
         {
             Debug.LogError("Build Executor : " + stepExecuteResultArgs.ResultMessage);
-            ClearSteps();
         }
 
         static void OnStepsCompleted()
         {
             OnBuildFinished();
-            ClearSteps();
-            ClearTasks();
         }
 
         static void RemoveCurrentStep()

@@ -74,6 +74,11 @@
     margin-bottom: 5px;
 }
 
+.replace-pipeline-toggle {
+    top: -16px;
+    margin-left: 0;
+}
+
 .list-build-entity {
     padding-bottom: 5px;
 }

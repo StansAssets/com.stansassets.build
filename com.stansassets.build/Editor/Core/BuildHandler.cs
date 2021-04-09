@@ -1,10 +1,12 @@
-﻿using UnityEditor;
+﻿using JetBrains.Annotations;
+using UnityEditor;
 
 namespace StansAssets.Build.Editor
 {
+   [UsedImplicitly]
    static class BuildHandler
    {
-      [InitializeOnLoadMethod]
+      [InitializeOnLoadMethod, UsedImplicitly]
       static void Initialize()
       {
          BuildPlayerWindow.RegisterBuildPlayerHandler(RegisterBuildPlayer);

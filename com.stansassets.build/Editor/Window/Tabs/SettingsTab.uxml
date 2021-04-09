@@ -3,6 +3,7 @@
 
     <sa:SettingsBlock label="Build Pipeline">
         <ui:Button name="refreshBtn" class="btn-refresh-pipelines" tooltip="Refresh Build Steps and Build Tasks"/>
+        <ui:Toggle label="Replace Unity Build Pipeline" name="replaceUnityBuildPipelineToggle" class="replace-pipeline-toggle" />
         <ui:Label text="Build Steps" name="labelBuildStep" class="label-build-entity"/>
         <ui:VisualElement name="listBuildStep" class="list-build-entity"/>
         <ui:Label text="Build Tasks" name="labelBuildTask" class="label-build-entity"/>

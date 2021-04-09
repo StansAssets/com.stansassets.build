@@ -52,9 +52,15 @@ namespace StansAssets.Build.Editor
         {
             s_BuildContext = buildContext;
 
-            ExecuteRegistrationProcess(s_BuildContext);
-
-            RunNextStep();
+            if (BuildSystemSettings.Instance.ReplaceUnityBuildPipeline)
+            {
+                ExecuteRegistrationProcess(s_BuildContext);
+                RunNextStep();
+            }
+            else
+            {
+                BuildPipeline.BuildPlayer(s_BuildContext.BuildPlayerOptions);
+            }
         }
 
         /// <summary>

@@ -43,6 +43,13 @@ namespace StansAssets.Build.Editor
             var refreshBtn = this.Q<Button>("refreshBtn");
             refreshBtn.clicked += UpdateBuildEntitiesCallback;
 
+            var replaceUnityBuildPipelineToggle = this.Q<Toggle>("replaceUnityBuildPipelineToggle");
+            replaceUnityBuildPipelineToggle.value = BuildSystemSettings.Instance.ReplaceUnityBuildPipeline;
+            replaceUnityBuildPipelineToggle.RegisterValueChangedCallback(e =>
+            {
+                BuildSystemSettings.Instance.ReplaceUnityBuildPipeline = e.newValue;
+            });
+
             SetBuildEntities(null, null);
             BindVersionIncrementSection();
         }

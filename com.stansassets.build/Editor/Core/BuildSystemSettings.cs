@@ -22,6 +22,9 @@ namespace StansAssets.Build.Editor
         bool m_AutomatedBuildNumberIncrement;
 
         [SerializeField]
+        bool m_ReplaceUnityBuildPipeline = true;
+
+        [SerializeField]
         List<string> m_MaskList = new List<string>();
 
         public List<ExtraField> ExtraFields => m_ExtraFields;
@@ -33,6 +36,16 @@ namespace StansAssets.Build.Editor
             internal set
             {
                 m_AutomatedBuildNumberIncrement = value;
+                Save();
+            }
+        }
+
+        public bool ReplaceUnityBuildPipeline
+        {
+            get => m_ReplaceUnityBuildPipeline;
+            internal set
+            {
+                m_ReplaceUnityBuildPipeline = value;
                 Save();
             }
         }

@@ -1,0 +1,15 @@
+{
+    "name": "StansAssets.Build.Meta",
+    "references": [
+        "StansAssets.Foundation"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

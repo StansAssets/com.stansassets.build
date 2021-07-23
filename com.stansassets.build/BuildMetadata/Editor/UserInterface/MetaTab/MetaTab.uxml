@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+
+    <sa:SettingsBlock label="Build Meta" name="build-meta" >
+
+    </sa:SettingsBlock>
+</ui:UXML>

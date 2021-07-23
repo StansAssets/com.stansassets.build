@@ -9,20 +9,23 @@ namespace StansAssets.Build.Editor
     public static class BuildSystemPackage
     {
         /// <summary>
-        /// The package name
+        /// The package name.
+        /// </summary>
+        public const string PackageName = "com.stansassets.build";
+
+        /// <summary>
+        /// The package display name
         /// </summary>
         public const string DisplayName = "Build System";
 
         /// <summary>
         /// Foundation package root path.
         /// </summary>
-        public static readonly string RootPath = PackageManagerUtility.GetPackageRootPath(BuildSystemSettings.Instance.PackageName);
+        public static readonly string RootPath = PackageManagerUtility.GetPackageRootPath(PackageName);
 
         /// <summary>
         /// Build System package info.
         /// </summary>
-        public static readonly PackageInfo Info = PackageManagerUtility.GetPackageInfo(BuildSystemSettings.Instance.PackageName);
-        
-        internal static readonly string WindowTabsPath = $"{RootPath}/Editor/Window/Tabs";
+        public static PackageInfo Info => PackageManagerUtility.GetPackageInfo(PackageName);
     }
 }

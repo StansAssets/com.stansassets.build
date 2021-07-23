@@ -28,7 +28,7 @@ namespace StansAssets.Build.Editor
         void OnPostprocessGameObject(GameObject go, List<Component> components);
 
         /// <summary>
-        /// Incidicates when build finished
+        /// Indicates when build finished
         /// </summary>
         void OnBuildFinished();
 

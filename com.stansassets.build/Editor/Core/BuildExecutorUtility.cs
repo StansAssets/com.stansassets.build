@@ -30,14 +30,14 @@ namespace StansAssets.Build.Editor
             }
         }
 
-        public static void CheckListenerPriorities(IEnumerable<IBuildExecutorListener> listenersToCheck)
+        public static void CheckListenerPriorities(IEnumerable<IBuildTasksProvider> listenersToCheck)
         {
-            Dictionary<int, List<IBuildExecutorListener>> prioritizedListeners = new Dictionary<int, List<IBuildExecutorListener>>();
+            Dictionary<int, List<IBuildTasksProvider>> prioritizedListeners = new Dictionary<int, List<IBuildTasksProvider>>();
             foreach (var listener in listenersToCheck)
             {
                 if (prioritizedListeners.TryGetValue(listener.Priority, out var listeners) == false)
                 {
-                    listeners = new List<IBuildExecutorListener>();
+                    listeners = new List<IBuildTasksProvider>();
                     prioritizedListeners[listener.Priority] = listeners;
                 }
                 listeners.Add(listener);

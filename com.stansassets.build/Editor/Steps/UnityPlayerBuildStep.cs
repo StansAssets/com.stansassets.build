@@ -33,11 +33,9 @@ namespace StansAssets.Build.Editor
 
         void BuildProject()
         {
-            BuildReport report = BuildPipeline.BuildPlayer(m_BuildContext.BuildPlayerOptions);
-
-            BuildSummary summary = report.summary;
-
-            BuildStepResultArgs resultArgs = new BuildStepResultArgs
+            var report = BuildPipeline.BuildPlayer(m_BuildContext.BuildPlayerOptions);
+            var summary = report.summary;
+            var resultArgs = new BuildStepResultArgs
             {
                 Step = this,
                 IsSuccess = summary.result == BuildResult.Succeeded,
@@ -62,13 +60,13 @@ namespace StansAssets.Build.Editor
             if(Application.isPlaying || !s_Tasks.Any())
                 return;
 
-            Scene currentScene = SceneManager.GetActiveScene();
-            GameObject[] rootGameObjects = currentScene.GetRootGameObjects();
-            Dictionary<GameObject, List<Component>> componentsMap = GetComponentsMap(rootGameObjects);
+            var currentScene = SceneManager.GetActiveScene();
+            var rootGameObjects = currentScene.GetRootGameObjects();
+            var componentsMap = GetComponentsMap(rootGameObjects);
 
-            for (int i = 0; i < s_Tasks.Count; i++)
+            foreach (var task in s_Tasks)
             {
-                s_Tasks[i].OnPostprocessScene(currentScene);
+                task.OnPostprocessScene(currentScene);
                 foreach (var pair in componentsMap)
                 {
                     var gameObject = pair.Key;
@@ -77,7 +75,7 @@ namespace StansAssets.Build.Editor
                     if (gameObject == null)
                         continue;
 
-                    s_Tasks[i].OnPostprocessGameObject(gameObject, components);
+                    task.OnPostprocessGameObject(gameObject, components);
                 }
             }
         }

@@ -1,0 +1,29 @@
+{
+    "name": "StansAssets.Build.Meta.Editor",
+    "references": [
+        "StansAssets.Foundation",
+        "StansAssets.Build.Meta",
+        "StansAssets.Git",
+        "StansAssets.Build.Editor",
+        "StansAssets.Plugins",
+        "StansAssets.Plugins.Editor",
+        "StansAssets.Foundation.Editor",
+        "StansAssets.GoogleDoc",
+        "StansAssets.GoogleDoc.Editor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.stansassets.google-doc-connector-pro",
+            "expression": "0.0.1",
+            "define": "GOOGLE_DOC_CONNECTOR_PRO_ENABLED"
+        }
+    ],
+    "noEngineReferences": false
+}

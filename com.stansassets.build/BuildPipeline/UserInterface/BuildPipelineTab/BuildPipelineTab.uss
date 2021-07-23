@@ -1,0 +1,27 @@
+.label-build-entity {
+    margin-bottom: 5px;
+}
+.list-build-entity {
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.item-build-entity {
+    flex-wrap: wrap;
+    margin: 3px;
+}
+
+.steps-provider {
+    height: 20px;
+    -unity-text-align: middle-left;
+    padding-left: 5px;
+}
+
+.steps-help-box {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.italic {
+    -unity-font-style: italic;
+}

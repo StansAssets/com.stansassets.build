@@ -1,0 +1,31 @@
+﻿using UnityEditor;
+
+namespace StansAssets.Build.Pipeline
+{
+    /// <summary>
+    /// Build parameters
+    /// </summary>
+    public interface IBuildContext
+    {
+        /// <summary>
+        /// Platform to build.
+        /// </summary>
+        BuildTarget TargetPlatform { get; }
+
+        /// <summary>
+        /// Build settings.
+        /// </summary>
+        BuildPlayerOptions BuildPlayerOptions { get; }
+
+        /// <summary>
+        /// Settings that predefined before the build started.
+        /// </summary>
+        BuildSettings BuildSettings { get; }
+
+        /// <summary>
+        /// Sets scene paths for a build. Will affect build only in case if called before UnityPlayerBuildStep (has priority lower than 0)
+        /// </summary>
+        /// <param name="scenes">Array with scenes path</param>
+        void SetScenes(string[] scenes);
+    }
+}

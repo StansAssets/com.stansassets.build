@@ -15,8 +15,7 @@ namespace StansAssets.Build.Editor
         void Execute(IBuildContext buildContext, Action<BuildStepResultArgs> onComplete = null);
 
         /// <summary>
-        /// Queue number of the step
-        /// (use less then 0 value if it needs to run before build step)
+        /// Queue number of the step. Higher priority wins.
         /// </summary>
         int Priority { get; }
 

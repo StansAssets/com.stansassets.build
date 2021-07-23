@@ -16,13 +16,11 @@ namespace StansAssets.Build.Editor
         static readonly List<IBuildTask> s_Tasks = new List<IBuildTask>();
 
         static IBuildStep s_CurrentStep;
-
         static IBuildContext s_BuildContext;
 
         static BuildExecutor()
         {
             Settings = new BuildSettings();
-
             ExecuteRegistrationProcess(new BuildContext(BuildExecutorUtility.BuildPlayerOptions, Settings));
         }
 
@@ -53,7 +51,6 @@ namespace StansAssets.Build.Editor
             s_BuildContext = buildContext;
 
             ExecuteRegistrationProcess(s_BuildContext);
-
             RunNextStep();
         }
 
@@ -63,24 +60,22 @@ namespace StansAssets.Build.Editor
         /// <param name="buildContext">Data class with necessary parameters for build execution</param>
         internal static void RegisterListeners(IBuildContext buildContext)
         {
-            var buildExecutorType = typeof(IBuildExecutorListener);
+            var buildExecutorType = typeof(IBuildTasksProvider);
             var scriptsWithBuildExecutorListener = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => buildExecutorType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract);
 
-            var listeners = new List<IBuildExecutorListener>();
+            var listeners = new List<IBuildTasksProvider>();
             foreach (var buildExecutorListener in scriptsWithBuildExecutorListener)
             {
-                if (Activator.CreateInstance(buildExecutorListener) is IBuildExecutorListener listener && listener.Active)
+                if (Activator.CreateInstance(buildExecutorListener) is IBuildTasksProvider listener && listener.Active)
                 {
                     listeners.Add(listener);
                 }
             }
 
             BuildExecutorUtility.CheckListenerPriorities(listeners);
-
             listeners.Sort((a,b) => a.Priority.CompareTo(b.Priority));
-
             foreach (var listener in listeners)
             {
                 listener.Register(buildContext);
@@ -121,7 +116,7 @@ namespace StansAssets.Build.Editor
 
             s_CurrentStep = s_Steps[0];
 
-            s_CurrentStep.Execute(s_BuildContext,OnStepCompleted);
+            s_CurrentStep.Execute(s_BuildContext, OnStepCompleted);
         }
 
         static void OnStepCompleted(BuildStepResultArgs stepExecuteResultArgs)

@@ -8,17 +8,17 @@ namespace StansAssets.Build.Editor
     public interface IBuildContext
     {
         /// <summary>
-        /// Platform to build
+        /// Platform to build.
         /// </summary>
         BuildTarget TargetPlatform { get; }
 
         /// <summary>
-        /// Build settings
+        /// Build settings.
         /// </summary>
         BuildPlayerOptions BuildPlayerOptions { get; }
 
         /// <summary>
-        /// Settings that predefined before the build started
+        /// Settings that predefined before the build started.
         /// </summary>
         BuildSettings BuildSettings { get; }
 

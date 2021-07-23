@@ -22,11 +22,6 @@
     "defineConstraints": [],
     "versionDefines": [
         {
-            "name": "com.stansassets.google-doc-connector-pro",
-            "expression": "0.0.1",
-            "define": "GOOGLE_DOC_CONNECTOR_PRO_ENABLED"
-        },
-        {
             "name": "com.stansassets.scene-management",
             "expression": "0.0.1",
             "define": "SCENE_MANAGEMENT_ENABLED"

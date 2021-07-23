@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+
+    <ui:VisualElement class="info-row">
+        <ui:Label name="row-label" class="row-label"/>
+        <ui:Label name="row-value" class="row-value"/>
+    </ui:VisualElement>
+</ui:UXML>

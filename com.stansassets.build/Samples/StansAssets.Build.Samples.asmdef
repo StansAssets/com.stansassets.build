@@ -1,7 +1,7 @@
 {
     "name": "StansAssets.Build.Samples",
     "references": [
-        "StansAssets.Build"
+        "StansAssets.Build.Meta"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

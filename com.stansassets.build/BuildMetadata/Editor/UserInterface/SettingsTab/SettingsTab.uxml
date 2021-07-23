@@ -1,0 +1,62 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+    <sa:SettingsBlock name="version-increment" label="Build Version Increment">
+        <ui:VisualElement name="google-doc-installed-block">
+            <sa:HelpBox type="Info" name="note"
+                        text="Automated build number increment during build"/>
+
+            <ui:VisualElement name="space" class="space"/>
+            <ui:Toggle label="Enabled" name="incrementBuildNumber-toggle"/>
+            <ui:VisualElement name="spreadsheetPanel" class="spreadsheet-panel">
+                <ui:VisualElement class="row">
+                    <ui:VisualElement name="list-spreadsheet"/>
+                    <ui:VisualElement class="flexible-space"/>
+                    <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
+                        <ui:Button name="openBtn" class="spreadsheet-url-copy btn-left"
+                                   tooltip="Open spreadsheet in browser."/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="spreadsheetBottomPanel" class="spreadsheet-bottom-panel">
+                    <ui:Label text="" name="statusIcon" class="status-icon-green"/>
+                    <ui:Label text="Ready to use." class="spreadsheet-date"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label text="Branch Masks (optional)"  class="branch-masks-title"/>
+            <sa:HelpBox type="Info" name="branch-masks-help-box"
+                        text="Define branch rules to participate in auto versions increment. For example master, develop, staging/*, etc."/>
+            <ui:VisualElement class="branch-masks">
+                <ui:VisualElement name="listMask" class="row list-mask">
+                </ui:VisualElement>
+                <ui:VisualElement class="row">
+                    <ui:TextField value="Paste mask branches to increase the build number" picking-mode="Ignore"
+                                  name="mask-text" class="spreadsheet-id"/>
+                    <ui:Button text="Add" name="add-mask"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label text="GitHub repository (optional)"  class="branch-masks-title"/>
+            <sa:HelpBox type="Info" name="github-help-box"
+                        text="Should be set in format company-name/repository-name"/>
+            <ui:VisualElement class="branch-masks">
+                <ui:TextField value="" picking-mode="Ignore" name="git-repo-text" class="spreadsheet-id"/>
+            </ui:VisualElement>
+
+            <ui:Label text="Extra Spreadsheet fields (optional)"  class="branch-masks-title"/>
+            <sa:HelpBox type="Info" name="github-help-box"
+                        text="You can set additional fields to be filled during build increment process. See the documentation for the support variables."/>
+            <ui:VisualElement class="branch-masks">
+                <ui:VisualElement name="extra-fields-container"/>
+                <ui:Button text="Add Field" name="add-extra-field" class="add-extra-field" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+
+        <ui:VisualElement name="google-doc-missing-block">
+            <sa:HelpBox type="Info" name="note"
+                        text="Google Doc connector plugin is required for this feature to work."/>
+            <ui:Button text="Download com.stansassets.google-doc-connector-pro" name="download-google-doc-connector-pro"/>
+        </ui:VisualElement>
+    </sa:SettingsBlock>
+</ui:UXML>

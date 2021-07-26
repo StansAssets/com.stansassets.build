@@ -1,29 +1,18 @@
 ﻿using UnityEditor;
+using UnityEditor.Build.Reporting;
 
 namespace StansAssets.Build.Pipeline
 {
-    /// <summary>
-    /// Build configuration data
-    /// </summary>
     class BuildContext : IBuildContext
     {
-        BuildPlayerOptions m_BuildPlayerOptions;
+        readonly BuildReport m_BuildReport;
+        public BuildTarget TargetPlatform => m_BuildReport.summary.platform;
+        public BuildTargetGroup PlatformGroup => m_BuildReport.summary.platformGroup;
+        public BuildOptions Options => m_BuildReport.summary.options;
 
-        public BuildContext(BuildPlayerOptions buildPlayerOptions, BuildSettings buildSettings)
+        public BuildContext(BuildReport buildReport)
         {
-            m_BuildPlayerOptions = buildPlayerOptions;
-            BuildSettings = buildSettings;
-
-            TargetPlatform = EditorUserBuildSettings.activeBuildTarget;
+            m_BuildReport = buildReport;
         }
-
-        public void SetScenes(string[] scenes)
-        {
-            m_BuildPlayerOptions.scenes = scenes;
-        }
-
-        public BuildTarget TargetPlatform { get; }
-        public BuildPlayerOptions BuildPlayerOptions => m_BuildPlayerOptions;
-        public BuildSettings BuildSettings { get; }
     }
 }

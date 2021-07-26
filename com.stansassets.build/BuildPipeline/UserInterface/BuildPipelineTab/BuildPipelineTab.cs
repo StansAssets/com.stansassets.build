@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using StansAssets.Build.Editor;
 using StansAssets.Plugins.Editor;
-using UnityEngine;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace StansAssets.Build.Pipeline
@@ -32,17 +32,15 @@ namespace StansAssets.Build.Pipeline
             m_PostProcessStepsContainer = this.Q<VisualElement>("listPostProcess");
             m_ScenePostProcessStepsContainer = this.Q<VisualElement>("scenePostProcess");
 
-            SetBuildSteps(BuildHandler.GenerateBuildStepsContainer(), BuildHandler.GetProviderName());
+            SetBuildSteps(BuildProcessor.GenerateBuildStepsContainer(), BuildProcessor.GetProviderName());
         }
 
-        public void SetBuildSteps(IBuildStepsContainer buildStepsContainer, string providerName)
+        public void SetBuildSteps(IBuildTasksContainer buildTasksContainer, string providerName)
         {
             m_StepsProviderName.text = providerName;
-            RenderBuildSteps(m_PreProcessStepsContainer, buildStepsContainer.PreBuildSteps);
-            RenderBuildSteps(m_ScenePostProcessStepsContainer, buildStepsContainer.ScenePostProcessStepsTasks);
-            RenderBuildSteps(m_PostProcessStepsContainer, buildStepsContainer.PostBuildSteps);
-
-            Debug.LogError("here!!!");
+            RenderBuildSteps(m_PreProcessStepsContainer, buildTasksContainer.PreBuildTasks);
+            RenderBuildSteps(m_ScenePostProcessStepsContainer, buildTasksContainer.ScenePostProcessStepsTasks);
+            RenderBuildSteps(m_PostProcessStepsContainer, buildTasksContainer.PostBuildTasks);
         }
 
         void RenderBuildSteps(VisualElement container, IReadOnlyCollection<object> buildSteps)
@@ -52,7 +50,7 @@ namespace StansAssets.Build.Pipeline
             {
                 foreach (var step in buildSteps)
                 {
-                    var label = new Label { text = $"- {step.GetType().Name}" };
+                    var label = new Label { text = $"- {ObjectNames.NicifyVariableName(step.GetType().Name)}" };
                     label.AddToClassList("item-build-entity");
                     container.Add(label);
                 }

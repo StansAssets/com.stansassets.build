@@ -47,7 +47,6 @@ namespace StansAssets.Build.Meta.Editor
         [PostProcessBuild(k_CallbackOrder)]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
-            Debug.LogWarning("[LOG] OnPostprocessBuild called");
             DeleteBuildMetadata();
             if (s_IncrementBuildNumberEnable)
             {

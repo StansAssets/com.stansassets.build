@@ -20,14 +20,14 @@ namespace StansAssets.Build.Pipeline
             m_CustomBuildStepsProviderTypeName = typeName;
         }
 
-        public static IBuildStepsProvider DefineBuildStepsProvider()
+        public static IBuildTasksProvider DefineBuildStepsProvider()
         {
-            IBuildStepsProvider customProvider = null;
+            IBuildTasksProvider customProvider = null;
             var customBuildStepsProviderTypeName = Instance.m_CustomBuildStepsProviderTypeName;
             if (!string.IsNullOrEmpty(customBuildStepsProviderTypeName))
             {
                 var provider = ReflectionUtility.CreateInstance(customBuildStepsProviderTypeName);
-                if (provider != null && provider is IBuildStepsProvider buildStepsProvider)
+                if (provider != null && provider is IBuildTasksProvider buildStepsProvider)
                 {
                     customProvider = buildStepsProvider;
                 }
@@ -37,7 +37,7 @@ namespace StansAssets.Build.Pipeline
                 }
             }
 
-            return customProvider ?? new DefaultBuildStepsProvider();
+            return customProvider ?? new DefaultBuildTasksProvider();
         }
     }
 }

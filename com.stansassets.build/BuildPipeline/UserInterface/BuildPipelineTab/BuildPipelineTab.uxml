@@ -5,11 +5,11 @@
         <ui:Label text="Preprocess Steps" name="labelBuildStep" class="label-build-entity"/>
         <ui:VisualElement name="listPreProcess" class="list-build-entity"/>
 
-        <ui:Label text="Postprocess Steps" name="labelBuildTask" class="label-build-entity"/>
-        <ui:VisualElement name="listPostProcess" class="list-build-entity"/>
-
         <ui:Label text="Scenes Postprocess Steps" name="labelBuildTask" class="label-build-entity"/>
         <ui:VisualElement name="scenePostProcess" class="list-build-entity"/>
+
+        <ui:Label text="Postprocess Steps" name="labelBuildTask" class="label-build-entity"/>
+        <ui:VisualElement name="listPostProcess" class="list-build-entity"/>
     </sa:SettingsBlock>
 
     <sa:SettingsBlock label="Steps Provider">
@@ -17,5 +17,11 @@
         <sa:HelpBox type="Info"
                     class="steps-help-box"
                     text="Steps provider is used to define build pipeline steps you see above. If you not defining own steps provider the default one will be used instead."/>
+    </sa:SettingsBlock>
+
+    <sa:SettingsBlock label="Build Configuration">
+        <sa:HelpBox type="Info"
+                    class="no-custom-editor-box"
+                    text="You can place your custom build configuration editor here."/>
     </sa:SettingsBlock>
 </ui:UXML>

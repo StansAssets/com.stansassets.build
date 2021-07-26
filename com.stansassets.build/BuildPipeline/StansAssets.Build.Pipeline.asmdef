@@ -9,7 +9,9 @@
         "StansAssets.Foundation.Editor",
         "StansAssets.SceneManagement.Build.Editor"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

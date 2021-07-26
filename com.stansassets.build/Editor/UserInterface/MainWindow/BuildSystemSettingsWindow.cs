@@ -24,24 +24,6 @@ namespace StansAssets.Build.Editor
             }
 
             AddTab("About", new AboutTab());
-
-            // SetupSettingsTab(m_SettingsTab);
-        }
-
-        /*
-        void SetupSettingsTab(SettingsTab settingsTab)
-        {
-            settingsTab.UpdateBuildEntitiesCallback += UpdateBuildEntities;
-            UpdateBuildEntities();
-        }*/
-
-        void UpdateBuildEntities()
-        {
-            var steps = BuildExecutor.Steps;
-            var tasks = BuildExecutor.Tasks;
-
-            //  m_SettingsTab.SetBuildEntities(steps.ToList().ConvertAll(s => new BuildStepEntity() { Name = s.Name}),
-          //  tasks.ToList().ConvertAll(s => new BuildTaskEntity() { Name = s.Name }));
         }
 
         public static GUIContent WindowTitle => new GUIContent(BuildSystemPackage.DisplayName);

@@ -11,7 +11,9 @@
         "StansAssets.GoogleDoc",
         "StansAssets.GoogleDoc.Editor"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

@@ -64,13 +64,18 @@ namespace StansAssets.Build.Pipeline
 
         public static IBuildTasksContainer GenerateBuildStepsContainer()
         {
-            var stepsProvider = BuildPipelineSettings.DefineBuildStepsProvider();
+            var stepsProvider = CreateBuildTasksProvider();
             return stepsProvider.GetBuildSteps(new UserEditorBuildSettings());
         }
 
         public static string GetProviderName()
         {
-            return BuildPipelineSettings.DefineBuildStepsProvider().GetType().Name;
+            return CreateBuildTasksProvider().GetType().Name;
+        }
+
+        static IBuildTasksProvider CreateBuildTasksProvider()
+        {
+            return new DefaultBuildTasksProvider();
         }
     }
 }

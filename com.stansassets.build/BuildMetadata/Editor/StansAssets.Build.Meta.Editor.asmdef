@@ -1,15 +1,15 @@
 {
-    "name": "StansAssets.Build.Editor",
+    "name": "StansAssets.Build.Meta.Editor",
     "references": [
-        "StansAssets.Build",
-        "StansAssets.Git",
         "StansAssets.Foundation",
-        "StansAssets.Foundation.Editor",
+        "StansAssets.Build.Meta",
+        "StansAssets.Git",
+        "StansAssets.Build.Editor",
         "StansAssets.Plugins",
         "StansAssets.Plugins.Editor",
+        "StansAssets.Foundation.Editor",
         "StansAssets.GoogleDoc",
-        "StansAssets.GoogleDoc.Editor",
-        "StansAssets.SceneManagement.Build.Editor"
+        "StansAssets.GoogleDoc.Editor"
     ],
     "includePlatforms": [
         "Editor"
@@ -22,9 +22,9 @@
     "defineConstraints": [],
     "versionDefines": [
         {
-            "name": "com.stansassets.scene-management",
+            "name": "com.stansassets.google-doc-connector-pro",
             "expression": "0.0.1",
-            "define": "SCENE_MANAGEMENT_ENABLED"
+            "define": "GOOGLE_DOC_CONNECTOR_PRO_ENABLED"
         }
     ],
     "noEngineReferences": false

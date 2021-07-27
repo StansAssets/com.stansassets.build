@@ -1,14 +1,12 @@
 {
-    "name": "StansAssets.Build.Editor",
+    "name": "StansAssets.Build.Pipeline",
     "references": [
-        "StansAssets.Build",
-        "StansAssets.Git",
         "StansAssets.Foundation",
-        "StansAssets.Foundation.Editor",
+        "StansAssets.Build.Meta",
+        "StansAssets.Build.Editor",
         "StansAssets.Plugins",
         "StansAssets.Plugins.Editor",
-        "StansAssets.GoogleDoc",
-        "StansAssets.GoogleDoc.Editor",
+        "StansAssets.Foundation.Editor",
         "StansAssets.SceneManagement.Build.Editor"
     ],
     "includePlatforms": [

@@ -1,0 +1,7 @@
+.info-row {
+    flex-direction: row;
+}
+
+.row-value {
+    -unity-font-style: bold;
+}

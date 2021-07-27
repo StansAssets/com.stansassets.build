@@ -1,14 +1,14 @@
 {
-    "name": "StansAssets.Build.Samples",
+    "name": "StansAssets.Build.Meta",
     "references": [
-        "StansAssets.Build.Meta"
+        "StansAssets.Foundation"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

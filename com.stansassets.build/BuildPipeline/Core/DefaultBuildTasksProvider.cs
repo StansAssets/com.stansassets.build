@@ -11,6 +11,7 @@ namespace StansAssets.Build.Pipeline
             var buildTasks = ReflectionUtility.FindImplementationsOf<IBuildTask>();
             foreach (var taskType in buildTasks)
             {
+                //TODO check if type has empty constructor and throw appropriate exception if it's not
                 var task = Activator.CreateInstance(taskType) as IBuildTask;
                 switch (task)
                 {

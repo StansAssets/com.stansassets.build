@@ -20,6 +20,6 @@ namespace StansAssets.Build.Pipeline
         /// <summary>
         /// Scene process build steps. Order matters.
         /// </summary>
-        IReadOnlyList<IScenePostProcessTask> ScenePostProcessStepsTasks { get; }
+        IReadOnlyList<IScenePostProcessTask> ScenePostProcessTasks { get; }
     }
 }

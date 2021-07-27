@@ -39,7 +39,7 @@ namespace StansAssets.Build.Pipeline
         {
             m_StepsProviderName.text = providerName;
             RenderBuildSteps(m_PreProcessStepsContainer, buildTasksContainer.PreBuildTasks);
-            RenderBuildSteps(m_ScenePostProcessStepsContainer, buildTasksContainer.ScenePostProcessStepsTasks);
+            RenderBuildSteps(m_ScenePostProcessStepsContainer, buildTasksContainer.ScenePostProcessTasks);
             RenderBuildSteps(m_PostProcessStepsContainer, buildTasksContainer.PostBuildTasks);
         }
 

@@ -49,12 +49,12 @@ namespace StansAssets.Build.Pipeline
         }
 
         [PostProcessScene(0)]
-        public static void OPostProcessScene()
+        public static void OnPostProcessScene()
         {
             if (Application.isPlaying)
                 return;
 
-            var postProcessSceneTasks = s_BuildTasks.ScenePostProcessStepsTasks;
+            var postProcessSceneTasks = s_BuildTasks.ScenePostProcessTasks;
             if (postProcessSceneTasks.Count == 0)
                 return;
 

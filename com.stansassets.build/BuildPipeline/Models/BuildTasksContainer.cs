@@ -13,7 +13,7 @@ namespace StansAssets.Build.Pipeline
 
         public IReadOnlyList<IBuildTask> PreBuildTasks => m_PreBuildSteps;
         public IReadOnlyList<IBuildTask> PostBuildTasks => m_PostBuildSteps;
-        public IReadOnlyList<IScenePostProcessTask> ScenePostProcessStepsTasks => m_ScenePostProcessStepsTasks;
+        public IReadOnlyList<IScenePostProcessTask> ScenePostProcessTasks => m_ScenePostProcessStepsTasks;
 
         public BuildTasksContainer()
         {

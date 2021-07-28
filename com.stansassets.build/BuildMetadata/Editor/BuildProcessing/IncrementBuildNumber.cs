@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 #if GOOGLE_DOC_CONNECTOR_PRO_ENABLED
 using StansAssets.Foundation;
 using StansAssets.GoogleDoc;
+using StansAssets.GoogleDoc.Editor;
 #endif
 using UnityEditor;
 using UnityEngine;
@@ -98,7 +99,7 @@ namespace StansAssets.Build.Meta.Editor
             }
 
             buildMetadata.BuildNumber = buildNumber + 1;
-            Debug.LogWarning("Setting build number to " + buildMetadata.BuildNumber);
+            Debug.LogWarning($"{nameof(IncrementBuildNumber)} Build number is set to " + buildMetadata.BuildNumber);
             PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
             PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
 

@@ -59,4 +59,9 @@
             <ui:Button text="Download com.stansassets.google-doc-connector-pro" name="download-google-doc-connector-pro"/>
         </ui:VisualElement>
     </sa:SettingsBlock>
+    <sa:SettingsBlock name="testing-version-increment" label="Testing">
+        <sa:HelpBox type="Info" name="note"
+                    text="This menu contain different option to test without making a build."/>
+        <ui:Button name="test-increment" text="Increment Test" class="add-extra-field"/>
+    </sa:SettingsBlock>
 </ui:UXML>

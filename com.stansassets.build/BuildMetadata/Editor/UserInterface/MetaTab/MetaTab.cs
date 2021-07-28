@@ -2,6 +2,7 @@
 using StansAssets.Build.Meta.Editor;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace StansAssets.Build.Editor
@@ -20,12 +21,16 @@ namespace StansAssets.Build.Editor
             m_MetaContainer = this.Q("build-meta");
             var metadata = Meta.Build.Metadata;
             AddMetaRow("App Version", metadata.Version);
-            AddMetaRow("Unity Version", metadata.FullUnityVersion);
+            AddMetaRow("Unity Version",  Application.unityVersion);
+            AddMetaRow("Full Unity Version", metadata.FullUnityVersion);
             AddMetaRow("Machine Name", metadata.MachineName);
             AddMetaRow("Branch", metadata.BranchName);
-            AddMetaRow("Commit", metadata.GitCommitHubHash);
+            AddMetaRow("Commit Hash Short", metadata.CommitShortHash);
+            AddMetaRow("Commit Hash GitHub", metadata.GitCommitHubHash);
             AddMetaRow("Commit Time", metadata.CommitTime.ToString("d"));
             AddMetaRow("Commit Msg", metadata.CommitMessage);
+            AddMetaRow("Has Working Copy Changes", metadata.HasChangesInWorkingCopy.ToString());
+
         }
 
         void AddMetaRow(string title, string value)

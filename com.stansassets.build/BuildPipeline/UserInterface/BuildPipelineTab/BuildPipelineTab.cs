@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using StansAssets.Build.Editor;
 using StansAssets.Plugins.Editor;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine.UIElements;
 
 namespace StansAssets.Build.Pipeline
@@ -35,31 +37,39 @@ namespace StansAssets.Build.Pipeline
             SetBuildTasks(BuildProcessor.GenerateBuildTasksContainer(), BuildProcessor.GetProviderName());
         }
 
-        public void SetBuildTasks(IBuildTasksContainer buildTasksContainer, string providerName)
+        public void SetBuildSteps(IBuildTasksContainerFull buildTasksContainer, string providerName)
         {
-            m_TasksProviderName.text = providerName;
-            RenderBuildTasks(m_PreProcessTasksContainer, buildTasksContainer.PreBuildTasks);
-            RenderBuildTasks(m_ScenePostProcessTasksContainer, buildTasksContainer.ScenePostProcessTasks);
-            RenderBuildTasks(m_PostProcessTasksContainer, buildTasksContainer.PostBuildTasks);
+            m_StepsProviderName.text = providerName;
+            RenderBuildSteps(m_PreProcessStepsContainer, buildTasksContainer.UnityPreBuildTasks, buildTasksContainer.PreBuildTasks);
+            RenderBuildSteps(m_ScenePostProcessStepsContainer, buildTasksContainer.UnityPostBuildTasks, buildTasksContainer.ScenePostProcessTasks);
+            RenderBuildSteps(m_PostProcessStepsContainer, buildTasksContainer.UnityProcessSceneTasks, buildTasksContainer.PostBuildTasks);
         }
 
-        void RenderBuildTasks(VisualElement container, IReadOnlyCollection<object> buildTasks)
+        static void RenderBuildSteps(VisualElement container, IReadOnlyCollection<IOrderedCallback> unityBuildSteps, IReadOnlyCollection<object> buildSteps)
         {
             container.Clear();
-            if (buildTasks.Count > 0)
+            if (unityBuildSteps.Count > 0 || buildSteps.Count > 0)
             {
-                foreach (var task in buildTasks)
-                {
-                    var label = new Label { text = $"- {ObjectNames.NicifyVariableName(task.GetType().Name)}" };
-                    label.AddToClassList("item-build-entity");
-                    container.Add(label);
-                }
+                RenderBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder <= 0));
+                RenderBuildSteps(container, buildSteps);
+                RenderBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder > 0));
             }
             else
             {
                 var label = new Label { text = "No Tasks Defined" };
                 label.AddToClassList("item-build-entity");
                 label.AddToClassList("italic");
+                container.Add(label);
+            }
+        }
+
+        static void RenderBuildSteps(VisualElement container, IEnumerable<object> buildSteps)
+        {
+            foreach (var step in buildSteps)
+            {
+                var stepType = step.GetType();
+                var label = new Label { text = $"- {ObjectNames.NicifyVariableName(stepType.Name)}" };
+                label.AddToClassList("item-build-entity");
                 container.Add(label);
             }
         }

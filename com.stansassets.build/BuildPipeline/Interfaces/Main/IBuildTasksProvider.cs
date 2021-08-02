@@ -5,6 +5,6 @@ namespace StansAssets.Build.Pipeline
     /// </summary>
     public interface IBuildTasksProvider
     {
-        IBuildTasksContainer GetBuildTasks(IUserEditorBuildSettings buildSettings);
+        IBuildTasksContainerFull GetBuildSteps(IUserEditorBuildSettings buildSettings);
     }
 }

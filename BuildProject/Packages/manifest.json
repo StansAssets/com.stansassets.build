@@ -10,7 +10,6 @@
   ],
   "dependencies": {
     "com.stansassets.build": "file:../../com.stansassets.build",
-    "com.stansassets.foundation": "file:/Users/stan/Documents/StansAssets/com.stansassets.foundation",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "3.4.7",

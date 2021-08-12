@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using StansAssets.Foundation;
 using StansAssets.GoogleDoc;
 using StansAssets.GoogleDoc.Editor;
+using Google;
+using GoogleSheet = Google.Apis.Sheets.v4.Data;
 #endif
 using UnityEditor;
 using UnityEngine;
@@ -103,19 +105,18 @@ namespace StansAssets.Build.Meta.Editor
             PlayerSettings.Android.bundleVersionCode = buildMetadata.BuildNumber;
             PlayerSettings.iOS.buildNumber = buildMetadata.BuildNumber.ToString();
 
-
             var commitValue = buildMetadata.CommitShortHash;
             if (!string.IsNullOrEmpty(BuildSystemSettings.Instance.GitHubRepository))
             {
-                commitValue = $"=HYPERLINK(\"https://github.com/{BuildSystemSettings.Instance.GitHubRepository}/commit/{buildMetadata.CommitHash}\",\"{buildMetadata.CommitShortHash}\")";
+                commitValue = $"=HYPERLINK(\"https://github.com/{BuildSystemSettings.Instance.GitHubRepository}/commit/{buildMetadata.CommitHash}\";\"{buildMetadata.CommitShortHash}\")";
             }
 
             if (UnityCloudBuildHooks.IsRunningOnUnityCloud)
             {
-                var manifest = (TextAsset) Resources.Load("UnityCloudBuildManifest.json");
+                var manifest = (TextAsset)Resources.Load("UnityCloudBuildManifest.json");
                 if (manifest != null)
                 {
-                    var manifestDict = Json.Deserialize(manifest.text) as Dictionary<string,object>;
+                    var manifestDict = Json.Deserialize(manifest.text) as Dictionary<string, object>;
                     foreach (var kvp in manifestDict)
                     {
                         // Be sure to check for null values!
@@ -151,10 +152,122 @@ namespace StansAssets.Build.Meta.Editor
             }
 
             spreadsheet.AppendGoogleCell(rangeAppend, appendList);
+            var sheetID = spreadsheet.Sheets.First(s => s.Name == sheetName).Id;
+
+            try
+            {
+                FormatSheet(sheetID, versionsSheet.Rows.Count());
+            }
+            catch (Exception exception)
+            {
+                var message = (exception is GoogleApiException) ? (exception as GoogleApiException).Error.Message : exception.Message;
+                spreadsheet.SetError($"Error: {message}");
+                spreadsheet.SetMachineName(SystemInfo.deviceName);
+                spreadsheet.SyncDateTime = DateTime.Now;
+
+                spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+            }
+
             if (spreadsheet.SyncErrorMassage != null)
             {
                 Debug.LogError(spreadsheet.SyncErrorMassage);
             }
+        }
+
+        static void FormatSheet(int sheetID, int rowNumber)
+        {
+            var batchUpdate = new GoogleSheet.BatchUpdateSpreadsheetRequest { Requests = new List<GoogleSheet.Request>() };
+
+            var titlesFormatRequest = new GoogleSheet.Request {
+                RepeatCell = new GoogleSheet.RepeatCellRequest {
+                    Range = new GoogleSheet.GridRange {
+                        SheetId = sheetID,
+                        StartColumnIndex = 0, EndColumnIndex = 8,
+                        StartRowIndex = 0, EndRowIndex = 1
+                    },
+                    Cell = new GoogleSheet.CellData {
+                        UserEnteredFormat = new GoogleSheet.CellFormat {
+                            TextFormat = new GoogleSheet.TextFormat { Bold = true },
+                            HorizontalAlignment = "CENTER"
+                        },
+                    },
+                    Fields = "userEnteredFormat(textFormat, horizontalAlignment)"
+                }
+            };
+
+            var commitColumnSizeRequest = new GoogleSheet.Request {
+                UpdateDimensionProperties = new GoogleSheet.UpdateDimensionPropertiesRequest {
+                    Range = new GoogleSheet.DimensionRange {
+                        SheetId = sheetID,
+                        Dimension = "COLUMNS",
+                        StartIndex = 4,
+                        EndIndex = 5
+                    },
+                    Properties = new GoogleSheet.DimensionProperties {
+                        PixelSize = 160
+                    },
+                    Fields = "pixelSize"
+                }
+            };
+
+            var dateColumnSizeRequest = new GoogleSheet.Request {
+                UpdateDimensionProperties = new GoogleSheet.UpdateDimensionPropertiesRequest {
+                    Range = new GoogleSheet.DimensionRange {
+                        SheetId = sheetID,
+                        Dimension = "COLUMNS",
+                        StartIndex = 6,
+                        EndIndex = 8
+                    },
+                    Properties = new GoogleSheet.DimensionProperties {
+                        PixelSize = 180
+                    },
+                    Fields = "pixelSize"
+                }
+            };
+
+            var datesAndCommitAligmentRequest = new GoogleSheet.Request {
+                RepeatCell = new GoogleSheet.RepeatCellRequest {
+                    Range = new GoogleSheet.GridRange {
+                        SheetId = sheetID,
+                        StartColumnIndex = 5, EndColumnIndex = 8,
+                        StartRowIndex = rowNumber, EndRowIndex = rowNumber + 1
+                    },
+                    Cell = new GoogleSheet.CellData {
+                        UserEnteredFormat = new GoogleSheet.CellFormat {
+                            HorizontalAlignment = "RIGHT"
+                        },
+                    },
+                    Fields = "userEnteredFormat(horizontalAlignment)"
+                }
+            };
+
+            var dateFormatRequest = new GoogleSheet.Request {
+                RepeatCell = new GoogleSheet.RepeatCellRequest {
+                    Range = new GoogleSheet.GridRange {
+                        SheetId = sheetID,
+                        StartColumnIndex = 6, EndColumnIndex = 8,
+                        StartRowIndex = rowNumber, EndRowIndex = rowNumber + 1
+                    },
+                    Cell = new GoogleSheet.CellData {
+                        UserEnteredFormat = new GoogleSheet.CellFormat {
+                            NumberFormat = new GoogleSheet.NumberFormat {
+                                Type = "DATE",
+                                Pattern = "ddd, dd mmm yyyy (hh:mm)"
+                            }
+                        }
+                    },
+                    Fields = "userEnteredFormat.numberFormat"
+                }
+            };
+
+            batchUpdate.Requests.Add(titlesFormatRequest);
+            batchUpdate.Requests.Add(commitColumnSizeRequest);
+            batchUpdate.Requests.Add(dateColumnSizeRequest);
+            batchUpdate.Requests.Add(datesAndCommitAligmentRequest);
+            batchUpdate.Requests.Add(dateFormatRequest);
+
+            var request = SpreadsheetSaverToGoogle.Service.Spreadsheets.BatchUpdate(batchUpdate, BuildSystemSettings.Instance.SpreadsheetId);
+            request.Execute();
         }
 #endif
     }

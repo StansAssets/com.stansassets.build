@@ -1,5 +1,6 @@
 {
     "name": "StansAssets.Build.Meta.Editor",
+    "rootNamespace": "",
     "references": [
         "StansAssets.Foundation",
         "StansAssets.Build.Meta",
@@ -16,8 +17,12 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Google.Apis.Sheets.v4.dll",
+        "Google.Apis.dll",
+        "Google.Apis.Core.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [

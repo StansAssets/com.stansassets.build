@@ -1,6 +1,8 @@
 ﻿using JetBrains.Annotations;
 using StansAssets.Build.Editor;
+using StansAssets.Foundation;
 using StansAssets.Plugins.Editor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -37,12 +39,17 @@ namespace StansAssets.Build.Pipeline
             SetBuildTasks(BuildProcessor.GenerateBuildTasksContainer(), BuildProcessor.GetProviderName());
         }
 
-        public void SetBuildSteps(IBuildTasksContainerFull buildTasksContainer, string providerName)
+        public void SetBuildSteps(IBuildTasksContainer buildTasksContainer, string providerName)
         {
             m_StepsProviderName.text = providerName;
-            RenderBuildSteps(m_PreProcessStepsContainer, buildTasksContainer.UnityPreBuildTasks, buildTasksContainer.PreBuildTasks);
-            RenderBuildSteps(m_ScenePostProcessStepsContainer, buildTasksContainer.UnityPostBuildTasks, buildTasksContainer.ScenePostProcessTasks);
-            RenderBuildSteps(m_PostProcessStepsContainer, buildTasksContainer.UnityProcessSceneTasks, buildTasksContainer.PostBuildTasks);
+
+            var unityPreBuildTasks = CollectUnityBuildTasks<IPreprocessBuildWithReport>();
+            var unityPostBuildTasks = CollectUnityBuildTasks<IPostprocessBuildWithReport>();
+            var unityProcessSceneTasks = CollectUnityBuildTasks<IProcessSceneWithReport>();
+
+            RenderBuildSteps(m_PreProcessStepsContainer, unityPreBuildTasks, buildTasksContainer.PreBuildTasks);
+            RenderBuildSteps(m_ScenePostProcessStepsContainer, unityPostBuildTasks, buildTasksContainer.ScenePostProcessTasks);
+            RenderBuildSteps(m_PostProcessStepsContainer, unityProcessSceneTasks, buildTasksContainer.PostBuildTasks);
         }
 
         static void RenderBuildSteps(VisualElement container, IReadOnlyCollection<IOrderedCallback> unityBuildSteps, IReadOnlyCollection<object> buildSteps)
@@ -72,6 +79,22 @@ namespace StansAssets.Build.Pipeline
                 label.AddToClassList("item-build-entity");
                 container.Add(label);
             }
+        }
+
+
+        static List<T> CollectUnityBuildTasks<T>()
+            where T : class, IOrderedCallback
+        {
+            var tasks = new List<T>();
+            var taskTypes = ReflectionUtility.FindImplementationsOf<T>(ignoreBuiltIn: true);
+            foreach (var taskType in taskTypes)
+            {
+                if (ReflectionUtility.HasDefaultConstructor(taskType))
+                {
+                    tasks.Add(Activator.CreateInstance(taskType) as T);
+                }
+            }
+            return tasks;
         }
     }
 }

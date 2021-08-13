@@ -1,21 +1,16 @@
 using StansAssets.Foundation;
 using System;
-using UnityEditor.Build;
 
 namespace StansAssets.Build.Pipeline
 {
     class DefaultBuildTasksProvider : IBuildTasksProvider
     {
-        public IBuildTasksContainerFull GetBuildSteps(IUserEditorBuildSettings buildSettings)
+        public IBuildTasksContainer GetBuildSteps(IUserEditorBuildSettings buildSettings)
         {
             var tasksContainer = new BuildTasksContainer();
 
             CollectBuildTasks(tasksContainer);
             CollectScenePostProcessTasks(tasksContainer);
-
-            CollectUnityBuildTasks<IPreprocessBuildWithReport>(tasksContainer.AddPreProcessBuildTask);
-            CollectUnityBuildTasks<IPostprocessBuildWithReport>(tasksContainer.AddPostProcessBuildTask);
-            CollectUnityBuildTasks<IProcessSceneWithReport>(tasksContainer.AddProcessSceneTask);
 
             return tasksContainer;
         }
@@ -58,19 +53,6 @@ namespace StansAssets.Build.Pipeline
                 {
                     var buildStep = Activator.CreateInstance(stepType) as IScenePostProcessTask;
                     tasksContainer.AddScenePostProcessTask(buildStep);
-                }
-            }
-        }
-
-        static void CollectUnityBuildTasks<T>(Action<T> addBuildTask)
-            where T : class, IOrderedCallback
-        {
-            var taskTypes = ReflectionUtility.FindImplementationsOf<T>(ignoreBuiltIn: true);
-            foreach (var taskType in taskTypes)
-            {
-                if (ReflectionUtility.HasDefaultConstructor(taskType))
-                {
-                    addBuildTask(Activator.CreateInstance(taskType) as T);
                 }
             }
         }

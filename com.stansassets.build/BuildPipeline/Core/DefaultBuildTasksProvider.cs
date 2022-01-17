@@ -1,5 +1,6 @@
 using StansAssets.Foundation;
 using System;
+using UnityEngine;
 
 namespace StansAssets.Build.Pipeline
 {
@@ -24,37 +25,48 @@ namespace StansAssets.Build.Pipeline
 
             foreach (var taskType in buildTasks)
             {
-                if (ReflectionUtility.HasDefaultConstructor(taskType))
+                if (!HasDefaultConstructor(taskType))
+                    continue;
+
+                var task = Activator.CreateInstance(taskType) as IBuildTask;
+                switch (task)
                 {
-                    var task = Activator.CreateInstance(taskType) as IBuildTask;
-                    switch (task)
-                    {
-                        case IPreProcessTask _:
-                        case IAsyncPreProcessTask _:
-                            tasksContainer.AddPreProcessTask(task);
-                            break;
-                        case IPostProcessTask _:
-                        case IAsyncPostProcessTask _:
-                            tasksContainer.AddPostProcessTask(task);
-                            break;
-                        default:
-                            throw new InvalidOperationException($"Unknown task type: {taskType.FullName}");
-                    }
+                    case IPreProcessTask _:
+                    case IAsyncPreProcessTask _:
+                        tasksContainer.AddPreProcessTask(task);
+                        break;
+                    case IPostProcessTask _:
+                    case IAsyncPostProcessTask _:
+                        tasksContainer.AddPostProcessTask(task);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unknown task type: {taskType.FullName}");
                 }
             }
         }
 
         static void CollectScenePostProcessTasks(BuildTasksContainer tasksContainer)
         {
-            var scenePostProcessSteps = ReflectionUtility.FindImplementationsOf<IScenePostProcessTask>();
-            foreach (var stepType in scenePostProcessSteps)
+            var scenePostProcessTasks = ReflectionUtility.FindImplementationsOf<IScenePostProcessTask>();
+            foreach (var taskType in scenePostProcessTasks)
             {
-                if (ReflectionUtility.HasDefaultConstructor(stepType))
-                {
-                    var buildStep = Activator.CreateInstance(stepType) as IScenePostProcessTask;
-                    tasksContainer.AddScenePostProcessTask(buildStep);
-                }
+                if (!HasDefaultConstructor(taskType))
+                    continue;
+
+                var buildStep = Activator.CreateInstance(taskType) as IScenePostProcessTask;
+                tasksContainer.AddScenePostProcessTask(buildStep);
             }
+        }
+
+        static bool HasDefaultConstructor(Type taskType)
+        {
+            var hasConstructor = ReflectionUtility.HasDefaultConstructor(taskType);
+            if (!hasConstructor)
+            {
+                Debug.LogError($"The task {taskType.FullName} has no parameterless constructor and will be ignored");
+            }
+
+            return hasConstructor;
         }
     }
 }

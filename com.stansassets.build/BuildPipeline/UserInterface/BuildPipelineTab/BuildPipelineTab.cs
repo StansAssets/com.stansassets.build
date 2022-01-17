@@ -39,7 +39,7 @@ namespace StansAssets.Build.Pipeline
             SetBuildTasks(BuildProcessor.GenerateBuildTasksContainer(), BuildProcessor.GetProviderName());
         }
 
-        public void SetBuildSteps(IBuildTasksContainer buildTasksContainer, string providerName)
+        void SetBuildSteps(IBuildTasksContainer buildTasksContainer, string providerName)
         {
             m_StepsProviderName.text = providerName;
 
@@ -47,19 +47,19 @@ namespace StansAssets.Build.Pipeline
             var unityPostBuildTasks = CollectUnityBuildTasks<IPostprocessBuildWithReport>();
             var unityProcessSceneTasks = CollectUnityBuildTasks<IProcessSceneWithReport>();
 
-            RenderBuildSteps(m_PreProcessStepsContainer, unityPreBuildTasks, buildTasksContainer.PreBuildTasks);
-            RenderBuildSteps(m_ScenePostProcessStepsContainer, unityPostBuildTasks, buildTasksContainer.ScenePostProcessTasks);
-            RenderBuildSteps(m_PostProcessStepsContainer, unityProcessSceneTasks, buildTasksContainer.PostBuildTasks);
+            AddBuildSteps(m_PreProcessStepsContainer, unityPreBuildTasks, buildTasksContainer.PreBuildTasks);
+            AddBuildSteps(m_ScenePostProcessStepsContainer, unityProcessSceneTasks, buildTasksContainer.ScenePostProcessTasks);
+            AddBuildSteps(m_PostProcessStepsContainer, unityPostBuildTasks, buildTasksContainer.PostBuildTasks);
         }
 
-        static void RenderBuildSteps(VisualElement container, IReadOnlyCollection<IOrderedCallback> unityBuildSteps, IReadOnlyCollection<object> buildSteps)
+        static void AddBuildSteps(VisualElement container, IReadOnlyCollection<IOrderedCallback> unityBuildSteps, IReadOnlyCollection<object> buildSteps)
         {
             container.Clear();
             if (unityBuildSteps.Count > 0 || buildSteps.Count > 0)
             {
-                RenderBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder <= 0));
-                RenderBuildSteps(container, buildSteps);
-                RenderBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder > 0));
+                AddBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder <= 0));
+                AddBuildSteps(container, buildSteps);
+                AddBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder > 0));
             }
             else
             {
@@ -70,7 +70,7 @@ namespace StansAssets.Build.Pipeline
             }
         }
 
-        static void RenderBuildSteps(VisualElement container, IEnumerable<object> buildSteps)
+        static void AddBuildSteps(VisualElement container, IEnumerable<object> buildSteps)
         {
             foreach (var step in buildSteps)
             {
@@ -81,9 +81,7 @@ namespace StansAssets.Build.Pipeline
             }
         }
 
-
-        static List<T> CollectUnityBuildTasks<T>()
-            where T : class, IOrderedCallback
+        static List<T> CollectUnityBuildTasks<T>() where T : class, IOrderedCallback
         {
             var tasks = new List<T>();
             var taskTypes = ReflectionUtility.FindImplementationsOf<T>(ignoreBuiltIn: true);
@@ -94,6 +92,7 @@ namespace StansAssets.Build.Pipeline
                     tasks.Add(Activator.CreateInstance(taskType) as T);
                 }
             }
+
             return tasks;
         }
     }

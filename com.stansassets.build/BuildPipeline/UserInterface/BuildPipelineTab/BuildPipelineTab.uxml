@@ -2,14 +2,24 @@
          xmlns:sa="StansAssets.Foundation.UIElements">
 
     <sa:SettingsBlock label="Build Pipeline">
-        <ui:Label text="Preprocess Tasks" name="labelBuildTask" class="label-build-entity"/>
-        <ui:VisualElement name="listPreProcess" class="list-build-entity"/>
+        <sa:HelpBox type="Info"
+                    class="steps-help-box"
+                    text="The actual execution order of steps with the same callback order may differ during the build process."/>
+        
+        <ui:Label text="Preprocess Stage" name="labelBuildStep" class="label-build-entity"/>
+        <ui:VisualElement name="preProcessStepsBefore" class="list-unity-build-entity"/>
+        <ui:VisualElement name="preProcessSteps" class="list-build-entity"/>
+        <ui:VisualElement name="preProcessStepsAfter" class="list-unity-build-entity"/>
 
-        <ui:Label text="Scenes Postprocess Tasks" name="labelBuildTask" class="label-build-entity"/>
-        <ui:VisualElement name="scenePostProcess" class="list-build-entity"/>
+        <ui:Label text="Scenes Process Stage" name="labelBuildTask" class="label-build-entity"/>
+        <ui:VisualElement name="sceneProcessStepsBefore" class="list-unity-build-entity"/>
+        <ui:VisualElement name="sceneProcessSteps" class="list-build-entity"/>
+        <ui:VisualElement name="sceneProcessStepsAfter" class="list-unity-build-entity"/>
 
-        <ui:Label text="Postprocess Tasks" name="labelBuildTask" class="label-build-entity"/>
-        <ui:VisualElement name="listPostProcess" class="list-build-entity"/>
+        <ui:Label text="Postprocess Stage" name="labelBuildTask" class="label-build-entity"/>
+        <ui:VisualElement name="postProcessStepsBefore" class="list-unity-build-entity"/>
+        <ui:VisualElement name="postProcessSteps" class="list-build-entity"/>
+        <ui:VisualElement name="postProcessStepsAfter" class="list-unity-build-entity"/>
     </sa:SettingsBlock>
 
     <sa:SettingsBlock label="Tasks Provider">

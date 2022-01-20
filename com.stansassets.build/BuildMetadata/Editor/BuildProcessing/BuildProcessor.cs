@@ -4,13 +4,12 @@ using StansAssets.Git;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEditor.Callbacks;
 using UnityEditorInternal;
 using UnityEngine;
 
 namespace StansAssets.Build.Meta.Editor
 {
-    class BuildProcessor : IPreprocessBuildWithReport
+    class BuildProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
         const int k_CallbackOrder = 1;
         static readonly string k_BuildMetadataPath = $"Assets/Resources/{nameof(BuildMetadata)}.asset";
@@ -43,9 +42,8 @@ namespace StansAssets.Build.Meta.Editor
 
             SaveBuildMetadata(buildMetadata);
         }
-
-        [PostProcessBuild(k_CallbackOrder)]
-        public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+        
+        public void OnPostprocessBuild(BuildReport report)
         {
             DeleteBuildMetadata();
             if (s_IncrementBuildNumberEnable)

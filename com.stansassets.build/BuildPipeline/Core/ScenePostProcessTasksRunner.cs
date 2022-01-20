@@ -8,15 +8,14 @@ namespace StansAssets.Build.Pipeline
     {
         readonly List<Component> m_TempComponentsCollection = new List<Component>();
 
-        public void Run(IBuildContext buildContext, IReadOnlyList<IScenePostProcessTask> postProcessSceneTasks)
+        public void Run(IBuildContext buildContext, Scene scene, IReadOnlyList<IScenePostProcessTask> postProcessSceneTasks)
         {
-            var currentScene = SceneManager.GetActiveScene();
-            var rootGameObjects = currentScene.GetRootGameObjects();
+            var rootGameObjects = scene.GetRootGameObjects();
             var componentsMap = GetComponentsMap(rootGameObjects);
 
             foreach (var task in postProcessSceneTasks)
             {
-                task.OnPostprocessScene(buildContext, currentScene);
+                task.OnPostprocessScene(buildContext, scene);
                 foreach (var pair in componentsMap)
                 {
                     var gameObject = pair.Key;

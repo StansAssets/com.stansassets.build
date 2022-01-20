@@ -1,18 +1,19 @@
 using System;
-using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEditor.Callbacks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace StansAssets.Build.Pipeline
 {
-    class BuildProcessor : IPreprocessBuildWithReport
+    class BuildProcessor : IPreprocessBuildWithReport, IProcessSceneWithReport, IPostprocessBuildWithReport
     {
+        const int k_CallbackOrder = 0;
+
         static IBuildTasksContainer s_BuildTasks;
         static IBuildContext s_BuildContext;
 
-        public int callbackOrder => 0;
+        public int callbackOrder => k_CallbackOrder;
 
         public void OnPreprocessBuild(BuildReport report)
         {
@@ -24,14 +25,28 @@ namespace StansAssets.Build.Pipeline
             }
         }
 
-        [PostProcessBuild(0)]
-        public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+        public void OnProcessScene(Scene scene, BuildReport report)
+        {
+            if (Application.isPlaying)
+                return;
+
+            var postProcessSceneTasks = s_BuildTasks.ScenePostProcessTasks;
+            if (postProcessSceneTasks.Count == 0)
+                return;
+
+            var sceneTasksRunner = new ScenePostProcessTasksRunner();
+            sceneTasksRunner.Run(s_BuildContext, scene, postProcessSceneTasks);
+        }
+
+        public void OnPostprocessBuild(BuildReport report)
         {
             foreach (var task in s_BuildTasks.PostBuildTasks)
             {
                 RunBuildTask(s_BuildContext, task);
             }
         }
+
+        public static int GetCallbackOrder() => k_CallbackOrder;
 
         static void RunBuildTask(IBuildContext buildContext, IBuildTask task)
         {
@@ -46,20 +61,6 @@ namespace StansAssets.Build.Pipeline
                 default:
                     throw new InvalidOperationException($"Unknown task type: {task.GetType().FullName}");
             }
-        }
-
-        [PostProcessScene(0)]
-        public static void OnPostProcessScene()
-        {
-            if (Application.isPlaying)
-                return;
-
-            var postProcessSceneTasks = s_BuildTasks.ScenePostProcessTasks;
-            if (postProcessSceneTasks.Count == 0)
-                return;
-
-            var sceneTasksRunner = new ScenePostProcessTasksRunner();
-            sceneTasksRunner.Run(s_BuildContext, postProcessSceneTasks);
         }
 
         public static IBuildTasksContainer GenerateBuildStepsContainer()

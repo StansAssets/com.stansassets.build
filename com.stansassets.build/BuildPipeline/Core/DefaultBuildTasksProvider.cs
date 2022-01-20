@@ -60,7 +60,7 @@ namespace StansAssets.Build.Pipeline
 
         static bool HasDefaultConstructor(Type taskType)
         {
-            var hasConstructor = ReflectionUtility.HasDefaultConstructor(taskType);
+            var hasConstructor = ReflectionUtils.HasDefaultConstructor(taskType);
             if (!hasConstructor)
             {
                 Debug.LogError($"The task {taskType.FullName} has no parameterless constructor and will be ignored");

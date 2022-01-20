@@ -1,4 +1,9 @@
-.list-build-entity{
+.list-build-entity {
+    border-color: rgb(0, 0, 0);
+    background-color: #708090;
+}
+
+.list-unity-build-entity {
     border-color: rgb(0, 0, 0);
     background-color: #4d4d4d;
 }

@@ -1,12 +1,8 @@
-﻿using JetBrains.Annotations;
-using StansAssets.Build.Editor;
-using StansAssets.Foundation;
-using StansAssets.Plugins.Editor;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
-using UnityEditor.Build;
+using JetBrains.Annotations;
+using StansAssets.Build.Editor;
+using StansAssets.Plugins.Editor;
 using UnityEngine.UIElements;
 
 namespace StansAssets.Build.Pipeline
@@ -14,9 +10,9 @@ namespace StansAssets.Build.Pipeline
     [UsedImplicitly]
     class BuildPipelineTab : BaseTab, IBuildSystemWindowTab
     {
-        readonly VisualElement m_PreProcessTasksContainer;
-        readonly VisualElement m_PostProcessTasksContainer;
-        readonly VisualElement m_ScenePostProcessTasksContainer;
+        const string k_PreProcessStageBaseName = "preProcessSteps";
+        const string k_SceneProcessStageBaseName = "sceneProcessSteps";
+        const string k_PostProcessStageBaseName = "postProcessSteps";
 
         readonly Label m_TasksProviderName;
 
@@ -30,70 +26,78 @@ namespace StansAssets.Build.Pipeline
         public BuildPipelineTab()
             : base($"{BuildPipelineSettings.WindowTabsPath}/{nameof(BuildPipelineTab)}/{nameof(BuildPipelineTab)}")
         {
-            m_TasksProviderName = this.Q<Label>("providerName");
-            m_TasksProviderName.AddToClassList("list-build-entity");
-            m_PreProcessTasksContainer = this.Q<VisualElement>("listPreProcess");
-            m_PostProcessTasksContainer = this.Q<VisualElement>("listPostProcess");
-            m_ScenePostProcessTasksContainer = this.Q<VisualElement>("scenePostProcess");
+            m_StepsProviderName = this.Q<Label>("providerName");
+            m_StepsProviderName.AddToClassList("list-build-entity");
 
-            SetBuildTasks(BuildProcessor.GenerateBuildTasksContainer(), BuildProcessor.GetProviderName());
+            var unityBuildStepsProvider = new UnityBuildStepsViewModelProvider();
+            var buildStepsProvider = new DefaultBuildStepsViewModelProvider();
+
+            SetBuildSteps(unityBuildStepsProvider.GetBuildSteps(), buildStepsProvider.GetBuildSteps());
+            SetProvider(BuildProcessor.GetProviderName());
         }
 
-        void SetBuildSteps(IBuildTasksContainer buildTasksContainer, string providerName)
+        void SetProvider(string providerName)
         {
             m_StepsProviderName.text = providerName;
-
-            var unityPreBuildTasks = CollectUnityBuildTasks<IPreprocessBuildWithReport>();
-            var unityPostBuildTasks = CollectUnityBuildTasks<IPostprocessBuildWithReport>();
-            var unityProcessSceneTasks = CollectUnityBuildTasks<IProcessSceneWithReport>();
-
-            AddBuildSteps(m_PreProcessStepsContainer, unityPreBuildTasks, buildTasksContainer.PreBuildTasks);
-            AddBuildSteps(m_ScenePostProcessStepsContainer, unityProcessSceneTasks, buildTasksContainer.ScenePostProcessTasks);
-            AddBuildSteps(m_PostProcessStepsContainer, unityPostBuildTasks, buildTasksContainer.PostBuildTasks);
+        }
+        
+        void SetBuildSteps(IBuildStepsViewModelContainer unityBuildStepsContainer, IBuildStepsViewModelContainer buildStepsContainer)
+        {
+            AddStageBuildSteps(k_PreProcessStageBaseName, unityBuildStepsContainer.PreBuildSteps, buildStepsContainer.PreBuildSteps);
+            AddStageBuildSteps(k_SceneProcessStageBaseName, unityBuildStepsContainer.SceneProcessSteps, buildStepsContainer.SceneProcessSteps);
+            AddStageBuildSteps(k_PostProcessStageBaseName, unityBuildStepsContainer.PostBuildSteps, buildStepsContainer.PostBuildSteps);
         }
 
-        static void AddBuildSteps(VisualElement container, IReadOnlyCollection<IOrderedCallback> unityBuildSteps, IReadOnlyCollection<object> buildSteps)
+        void AddStageBuildSteps(string containerBaseName, IReadOnlyList<BuildStepViewModel> unityBuildSteps, IReadOnlyList<BuildStepViewModel> buildSteps)
         {
-            container.Clear();
-            if (unityBuildSteps.Count > 0 || buildSteps.Count > 0)
+            var containerBefore = Root.Q<VisualElement>($"{containerBaseName}Before");
+            var container = Root.Q<VisualElement>(containerBaseName);
+            var containerAfter = Root.Q<VisualElement>($"{containerBaseName}After");
+
+            var callbackOrder = BuildProcessor.GetCallbackOrder();
+            var stepsBefore = unityBuildSteps.Where(step => step.callbackOrder <= callbackOrder);
+            var stepsAfter = unityBuildSteps.Where(step => step.callbackOrder > callbackOrder);
+            
+            AddUnityBuildSteps(containerBefore, stepsBefore);
+            AddBuildSteps(container, buildSteps);
+            AddUnityBuildSteps(containerAfter, stepsAfter);
+        }
+
+        static void AddUnityBuildSteps(VisualElement container, IEnumerable<BuildStepViewModel> buildSteps)
+        {
+            if (container == null)
+                return;
+
+            foreach (var step in buildSteps)
             {
-                AddBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder <= 0));
-                AddBuildSteps(container, buildSteps);
-                AddBuildSteps(container, unityBuildSteps.Where(step => step.callbackOrder > 0));
+                var label = new Label { text = $"{step.callbackOrder} {step.name}" };
+                label.AddToClassList("item-build-entity");
+                container.Add(label);
             }
-            else
+        }
+
+        static void AddBuildSteps(VisualElement container, IEnumerable<BuildStepViewModel> buildSteps)
+        {
+            if (container == null)
+                return;
+
+            if (!buildSteps.Any())
             {
-                var label = new Label { text = "No Tasks Defined" };
+                var label = new Label { text = "No Build Steps Defined" };
+                label.AddToClassList("item-build-entity");
+                label.AddToClassList("italic");
+                container.Add(label);
+                
+                return;
+            }
+                
+            foreach (var step in buildSteps)
+            {
+                var label = new Label { text = $"- {step.name}" };
                 label.AddToClassList("item-build-entity");
                 label.AddToClassList("italic");
                 container.Add(label);
             }
-        }
-
-        static void AddBuildSteps(VisualElement container, IEnumerable<object> buildSteps)
-        {
-            foreach (var step in buildSteps)
-            {
-                var stepType = step.GetType();
-                var label = new Label { text = $"- {ObjectNames.NicifyVariableName(stepType.Name)}" };
-                label.AddToClassList("item-build-entity");
-                container.Add(label);
-            }
-        }
-
-        static List<T> CollectUnityBuildTasks<T>() where T : class, IOrderedCallback
-        {
-            var tasks = new List<T>();
-            var taskTypes = ReflectionUtility.FindImplementationsOf<T>(ignoreBuiltIn: true);
-            foreach (var taskType in taskTypes)
-            {
-                if (ReflectionUtility.HasDefaultConstructor(taskType))
-                {
-                    tasks.Add(Activator.CreateInstance(taskType) as T);
-                }
-            }
-
-            return tasks;
         }
     }
 }

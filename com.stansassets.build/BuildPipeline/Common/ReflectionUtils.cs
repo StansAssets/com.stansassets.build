@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace StansAssets.Build.Pipeline
 {
-    //TODO: move certain methods to 
+    //TODO: move certain methods to the com.stansassets.foundation package
     public static class ReflectionUtils
     {
         static readonly string[] s_BuiltInAssemblyPrefixes = { "Mono.", "Unity.", "UnityEngine", "UnityEditor", "System", "mscorlib" };

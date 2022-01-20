@@ -95,7 +95,6 @@ namespace StansAssets.Build.Pipeline
             {
                 var label = new Label { text = $"- {step.name}" };
                 label.AddToClassList("item-build-entity");
-                label.AddToClassList("italic");
                 container.Add(label);
             }
         }

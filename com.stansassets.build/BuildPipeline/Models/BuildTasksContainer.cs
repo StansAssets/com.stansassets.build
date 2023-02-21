@@ -3,50 +3,50 @@ using System.Collections.Generic;
 namespace StansAssets.Build.Pipeline
 {
     /// <summary>
-    /// Provides build steps. Order matters.
+    /// Provides build tasks. Order matters.
     /// </summary>
     public class BuildTasksContainer : IBuildTasksContainer
     {
-        readonly List<IBuildTask> m_PreBuildSteps;
-        readonly List<IBuildTask> m_PostBuildSteps;
-        readonly List<IScenePostProcessTask> m_ScenePostProcessStepsTasks;
+        readonly List<IBuildTask> m_PreBuildTasks;
+        readonly List<IBuildTask> m_PostBuildTasks;
+        readonly List<IScenePostProcessTask> m_ScenePostProcessTasks;
 
-        public IReadOnlyList<IBuildTask> PreBuildTasks => m_PreBuildSteps;
-        public IReadOnlyList<IBuildTask> PostBuildTasks => m_PostBuildSteps;
-        public IReadOnlyList<IScenePostProcessTask> ScenePostProcessTasks => m_ScenePostProcessStepsTasks;
+        public IReadOnlyList<IBuildTask> PreBuildTasks => m_PreBuildTasks;
+        public IReadOnlyList<IBuildTask> PostBuildTasks => m_PostBuildTasks;
+        public IReadOnlyList<IScenePostProcessTask> ScenePostProcessTasks => m_ScenePostProcessTasks;
 
         public BuildTasksContainer()
         {
-            m_PreBuildSteps = new List<IBuildTask>();
-            m_PostBuildSteps = new List<IBuildTask>();
-            m_ScenePostProcessStepsTasks = new List<IScenePostProcessTask>();
+            m_PreBuildTasks = new List<IBuildTask>();
+            m_PostBuildTasks = new List<IBuildTask>();
+            m_ScenePostProcessTasks = new List<IScenePostProcessTask>();
         }
 
         /// <summary>
-        /// Registers a pre process build step.
+        /// Registers a pre process build task.
         /// </summary>
-        /// <param name="step">Step to be registered.</param>
-        public void AddPreProcessTask(IBuildTask step)
+        /// <param name="task">Task to be registered.</param>
+        public void AddPreProcessTask(IBuildTask task)
         {
-            m_PreBuildSteps.Add(step);
+            m_PreBuildTasks.Add(task);
         }
 
         /// <summary>
-        /// Registers a post process build step.
+        /// Registers a post process build task.
         /// </summary>
-        /// <param name="step">Step to be registered.</param>
-        public void AddPostProcessTask(IBuildTask step)
+        /// <param name="task">Task to be registered.</param>
+        public void AddPostProcessTask(IBuildTask task)
         {
-            m_PostBuildSteps.Add(step);
+            m_PostBuildTasks.Add(task);
         }
 
         /// <summary>
-        /// Registers a post process scene step.
+        /// Registers a post process scene task.
         /// </summary>
-        /// <param name="task">Step to be registered.</param>
+        /// <param name="task">Task to be registered.</param>
         public void AddScenePostProcessTask(IScenePostProcessTask task)
         {
-            m_ScenePostProcessStepsTasks.Add(task);
+            m_ScenePostProcessTasks.Add(task);
         }
     }
 }

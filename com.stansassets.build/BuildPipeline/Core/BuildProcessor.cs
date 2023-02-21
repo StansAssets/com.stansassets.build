@@ -17,7 +17,7 @@ namespace StansAssets.Build.Pipeline
         public void OnPreprocessBuild(BuildReport report)
         {
             s_BuildContext = new BuildContext(report);
-            s_BuildTasks = GenerateBuildStepsContainer();
+            s_BuildTasks = GenerateBuildTasksContainer();
             foreach (var task in s_BuildTasks.PreBuildTasks)
             {
                 RunBuildTask(s_BuildContext, task);
@@ -62,10 +62,10 @@ namespace StansAssets.Build.Pipeline
             sceneTasksRunner.Run(s_BuildContext, postProcessSceneTasks);
         }
 
-        public static IBuildTasksContainer GenerateBuildStepsContainer()
+        public static IBuildTasksContainer GenerateBuildTasksContainer()
         {
-            var stepsProvider = CreateBuildTasksProvider();
-            return stepsProvider.GetBuildSteps(new UserEditorBuildSettings());
+            var tasksProvider = CreateBuildTasksProvider();
+            return tasksProvider.GetBuildTasks(new UserEditorBuildSettings());
         }
 
         public static string GetProviderName()

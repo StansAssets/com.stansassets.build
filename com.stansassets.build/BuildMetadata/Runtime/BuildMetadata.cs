@@ -101,7 +101,7 @@ namespace StansAssets.Build.Meta
             {
                 if (m_CommitTimeDate == DateTime.MinValue)
                 {
-                    m_CommitTimeDate =  DateTimeExtensions.UnixTimestampToDateTime(m_CommitTimeUnix);
+                    m_CommitTimeDate =  UnixTimeStampToDateTime(m_CommitTimeUnix);
                 }
 
                 return m_CommitTimeDate;
@@ -129,6 +129,18 @@ namespace StansAssets.Build.Meta
         internal void SetCommitTime(double unixTime)
         {
             m_CommitTimeUnix = unixTime;
+        }
+        
+        /// <summary>
+        /// Converts unix timestamp to <see cref="DateTime"/> with high precision.
+        /// </summary>
+        /// <param name="unixTimeStamp">Unix timestamp.</param>
+        /// <returns>DateTime object that represents the same moment in time on machine as provided Unix time.</returns>
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTime;
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IBuildStepsViewModelProvider
     {
-        public IBuildStepsViewModelContainer GetBuildSteps();
+        IBuildStepsViewModelContainer GetBuildSteps();
     }
 }

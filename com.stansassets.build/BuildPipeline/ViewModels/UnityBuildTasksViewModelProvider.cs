@@ -9,18 +9,18 @@ using UnityEngine;
 
 namespace StansAssets.Build.Pipeline
 {
-    public class UnityBuildStepsViewModelProvider : IBuildStepsViewModelProvider
+    public class UnityBuildTasksViewModelProvider : IBuildStepsViewModelProvider
     {
         public IBuildStepsViewModelContainer GetBuildSteps()
         {
             var stepsContainer = new BuildStepsViewModelSortedContainer();
 
-            CollectPreProcessSteps(stepsContainer);
+            CollectPreProcessTasks(stepsContainer);
 
             return stepsContainer;
         }
 
-        static void CollectPreProcessSteps(BuildStepsViewModelSortedContainer sortedContainer)
+        static void CollectPreProcessTasks(BuildStepsViewModelSortedContainer sortedContainer)
         {
             var preBuildStepsWithReport = CollectUnityBuildStepsWithReport<IPreprocessBuildWithReport>();
             var sceneProcessStepsWithReport = CollectUnityBuildStepsWithReport<IProcessSceneWithReport>();

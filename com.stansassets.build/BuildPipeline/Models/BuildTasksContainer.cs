@@ -7,9 +7,9 @@ namespace StansAssets.Build.Pipeline
     /// </summary>
     public class BuildTasksContainer : IBuildTasksContainer
     {
-        readonly List<IBuildTask> m_PreBuildSteps;
-        readonly List<IBuildTask> m_PostBuildSteps;
-        readonly List<IScenePostProcessTask> m_ScenePostProcessStepsTasks;
+        readonly List<IBuildTask> m_PreBuildTasks;
+        readonly List<IBuildTask> m_PostBuildTasks;
+        readonly List<IScenePostProcessTask> m_ScenePostProcessTasks;
 
         public IReadOnlyList<IBuildTask> PreBuildTasks => m_PreBuildTasks;
         public IReadOnlyList<IBuildTask> PostBuildTasks => m_PostBuildTasks;
@@ -18,9 +18,9 @@ namespace StansAssets.Build.Pipeline
         public BuildTasksContainer()
         {
 
-            m_PreBuildSteps = new List<IBuildTask>();
-            m_PostBuildSteps = new List<IBuildTask>();
-            m_ScenePostProcessStepsTasks = new List<IScenePostProcessTask>();
+            m_PreBuildTasks = new List<IBuildTask>();
+            m_PostBuildTasks = new List<IBuildTask>();
+            m_ScenePostProcessTasks = new List<IScenePostProcessTask>();
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace StansAssets.Build.Pipeline
         }
 
         /// <summary>
-        /// Registers a post process build step.
+        /// Registers a post process build task.
         /// </summary>
         /// <param name="task">Task to be registered.</param>
         public void AddPostProcessTask(IBuildTask task)
@@ -42,7 +42,7 @@ namespace StansAssets.Build.Pipeline
         }
 
         /// <summary>
-        /// Registers a post process scene step.
+        /// Registers a post process scene task.
         /// </summary>
         /// <param name="task">Task to be registered.</param>
         public void AddScenePostProcessTask(IScenePostProcessTask task)

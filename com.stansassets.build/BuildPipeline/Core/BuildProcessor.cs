@@ -63,7 +63,7 @@ namespace StansAssets.Build.Pipeline
             }
         }
 
-        public static IBuildTasksContainer GenerateBuildStepsContainer()
+        public static IBuildTasksContainer GenerateBuildTasksContainer()
         {
             var tasksProvider = CreateBuildTasksProvider();
             return tasksProvider.GetBuildTasks(new UserEditorBuildSettings());

@@ -84,7 +84,10 @@ namespace StansAssets.Build.Meta.Editor
             var buildNumber = 0;
             if (versionsSheet == null)
             {
-                spreadsheet.CreateGoogleSheet(sheetName);
+                spreadsheet.CreateGoogleSheet(new GoogleSheet.SheetProperties
+                {
+                    Title = sheetName
+                });
                 spreadsheet.AppendGoogleCell(rangeAppend, s_Headers);
                 if (spreadsheet.SyncErrorMassage != null)
                 {

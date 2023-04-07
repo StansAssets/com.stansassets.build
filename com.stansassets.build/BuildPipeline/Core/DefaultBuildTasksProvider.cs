@@ -6,7 +6,7 @@ namespace StansAssets.Build.Pipeline
 {
     class DefaultBuildTasksProvider : IBuildTasksProvider
     {
-        public IBuildTasksContainer GetBuildSteps(IUserEditorBuildSettings buildSettings)
+        public IBuildTasksContainer GetBuildTasks(IUserEditorBuildSettings buildSettings)
         {
             var tasksContainer = new BuildTasksContainer();
 

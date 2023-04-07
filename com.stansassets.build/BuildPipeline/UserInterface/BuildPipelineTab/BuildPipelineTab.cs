@@ -10,9 +10,9 @@ namespace StansAssets.Build.Pipeline
     [UsedImplicitly]
     class BuildPipelineTab : BaseTab, IBuildSystemWindowTab
     {
-        const string k_PreProcessStageBaseName = "preProcessSteps";
-        const string k_SceneProcessStageBaseName = "sceneProcessSteps";
-        const string k_PostProcessStageBaseName = "postProcessSteps";
+        const string k_PreProcessStageBaseName = "preProcessTasks";
+        const string k_SceneProcessStageBaseName = "sceneProcessTasks";
+        const string k_PostProcessStageBaseName = "postProcessTasks";
 
         readonly Label m_TasksProviderName;
 
@@ -26,19 +26,19 @@ namespace StansAssets.Build.Pipeline
         public BuildPipelineTab()
             : base($"{BuildPipelineSettings.WindowTabsPath}/{nameof(BuildPipelineTab)}/{nameof(BuildPipelineTab)}")
         {
-            m_StepsProviderName = this.Q<Label>("providerName");
-            m_StepsProviderName.AddToClassList("list-build-entity");
+            m_TasksProviderName = this.Q<Label>("providerName");
+            m_TasksProviderName.AddToClassList("list-build-entity");
 
-            var unityBuildStepsProvider = new UnityBuildStepsViewModelProvider();
-            var buildStepsProvider = new DefaultBuildStepsViewModelProvider();
+            var unityBuildTasksProvider = new UnityBuildTasksViewModelProvider();
+            var buildTasksProvider = new DefaultBuildTasksViewModelProvider();
 
-            SetBuildSteps(unityBuildStepsProvider.GetBuildSteps(), buildStepsProvider.GetBuildSteps());
+            SetBuildSteps(unityBuildTasksProvider.GetBuildSteps(), buildTasksProvider.GetBuildSteps());
             SetProvider(BuildProcessor.GetProviderName());
         }
 
         void SetProvider(string providerName)
         {
-            m_StepsProviderName.text = providerName;
+            m_TasksProviderName.text = providerName;
         }
         
         void SetBuildSteps(IBuildStepsViewModelContainer unityBuildStepsContainer, IBuildStepsViewModelContainer buildStepsContainer)
@@ -83,7 +83,7 @@ namespace StansAssets.Build.Pipeline
 
             if (!buildSteps.Any())
             {
-                var label = new Label { text = "No Build Steps Defined" };
+                var label = new Label { text = "No Build Tasks Defined" };
                 label.AddToClassList("item-build-entity");
                 label.AddToClassList("italic");
                 container.Add(label);

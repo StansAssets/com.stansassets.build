@@ -1,5 +1,6 @@
-using System;
 using StansAssets.Foundation;
+using System;
+using UnityEngine;
 
 namespace StansAssets.Build.Pipeline
 {
@@ -8,10 +9,25 @@ namespace StansAssets.Build.Pipeline
         public IBuildTasksContainer GetBuildTasks(IUserEditorBuildSettings buildSettings)
         {
             var tasksContainer = new BuildTasksContainer();
+
+            CollectBuildTasks(tasksContainer);
+            CollectScenePostProcessTasks(tasksContainer);
+
+            return tasksContainer;
+        }
+
+        /// <summary>
+        /// Collects 'Pre' and 'Post' build tasks of type <see cref="IBuildTask"/>
+        /// </summary>
+        static void CollectBuildTasks(BuildTasksContainer tasksContainer)
+        {
             var buildTasks = ReflectionUtility.FindImplementationsOf<IBuildTask>();
+
             foreach (var taskType in buildTasks)
             {
-                //TODO check if type has empty constructor and throw appropriate exception if it's not
+                if (!HasDefaultConstructor(taskType))
+                    continue;
+
                 var task = Activator.CreateInstance(taskType) as IBuildTask;
                 switch (task)
                 {
@@ -24,18 +40,33 @@ namespace StansAssets.Build.Pipeline
                         tasksContainer.AddPostProcessTask(task);
                         break;
                     default:
-                        throw new InvalidOperationException($"Unknown task type: {task.GetType().FullName}");
+                        throw new InvalidOperationException($"Unknown task type: {taskType.FullName}");
                 }
             }
+        }
 
+        static void CollectScenePostProcessTasks(BuildTasksContainer tasksContainer)
+        {
             var scenePostProcessTasks = ReflectionUtility.FindImplementationsOf<IScenePostProcessTask>();
             foreach (var taskType in scenePostProcessTasks)
             {
-                var buildTask = Activator.CreateInstance(taskType) as IScenePostProcessTask;
-                tasksContainer.AddScenePostProcessTask(buildTask);
+                if (!HasDefaultConstructor(taskType))
+                    continue;
+
+                var buildStep = Activator.CreateInstance(taskType) as IScenePostProcessTask;
+                tasksContainer.AddScenePostProcessTask(buildStep);
+            }
+        }
+
+        static bool HasDefaultConstructor(Type taskType)
+        {
+            var hasConstructor = ReflectionUtils.HasDefaultConstructor(taskType);
+            if (!hasConstructor)
+            {
+                Debug.LogError($"The task {taskType.FullName} has no parameterless constructor and will be ignored");
             }
 
-            return tasksContainer;
+            return hasConstructor;
         }
     }
 }

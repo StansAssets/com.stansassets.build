@@ -1,7 +1,13 @@
 .label-build-entity {
+    -unity-font-style: bold;
     margin-bottom: 5px;
 }
 .list-build-entity {
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.list-unity-build-entity {
     margin-bottom: 5px;
     margin-left: 5px;
 }
@@ -11,13 +17,13 @@
     margin: 3px;
 }
 
-.steps-provider {
+.tasks-provider {
     height: 20px;
     -unity-text-align: middle-left;
     padding-left: 5px;
 }
 
-.steps-help-box {
+.tasks-help-box {
     padding-left: 5px;
     padding-right: 5px;
 }

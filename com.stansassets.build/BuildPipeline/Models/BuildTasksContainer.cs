@@ -17,6 +17,7 @@ namespace StansAssets.Build.Pipeline
 
         public BuildTasksContainer()
         {
+
             m_PreBuildTasks = new List<IBuildTask>();
             m_PostBuildTasks = new List<IBuildTask>();
             m_ScenePostProcessTasks = new List<IScenePostProcessTask>();

@@ -5,7 +5,7 @@ namespace StansAssets.Build.Pipeline
 {
     class DefaultBuildTasksProvider : IBuildTasksProvider
     {
-        public IBuildTasksContainer GetBuildSteps(IUserEditorBuildSettings buildSettings)
+        public IBuildTasksContainer GetBuildTasks(IUserEditorBuildSettings buildSettings)
         {
             var tasksContainer = new BuildTasksContainer();
             var buildTasks = ReflectionUtility.FindImplementationsOf<IBuildTask>();
@@ -28,11 +28,11 @@ namespace StansAssets.Build.Pipeline
                 }
             }
 
-            var scenePostProcessSteps = ReflectionUtility.FindImplementationsOf<IScenePostProcessTask>();
-            foreach (var stepType in scenePostProcessSteps)
+            var scenePostProcessTasks = ReflectionUtility.FindImplementationsOf<IScenePostProcessTask>();
+            foreach (var taskType in scenePostProcessTasks)
             {
-                var buildStep = Activator.CreateInstance(stepType) as IScenePostProcessTask;
-                tasksContainer.AddScenePostProcessTask(buildStep);
+                var buildTask = Activator.CreateInstance(taskType) as IScenePostProcessTask;
+                tasksContainer.AddScenePostProcessTask(buildTask);
             }
 
             return tasksContainer;
